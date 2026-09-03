@@ -1,0 +1,11 @@
+# Python / uv
+__pycache__/
+*.pyc
+.venv/
+
+# Project-specific: never commit real save data or generated output
+*.sl2
+*.sl2.bak
+saves/
+split_files/
+achievement_state.json
