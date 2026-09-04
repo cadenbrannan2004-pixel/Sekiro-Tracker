@@ -33,7 +33,7 @@ def read_stats(slot_data: bytes) -> dict:
         stats["emblems"] = struct.unpack_from("<B", slot_data, EMBLEM_OFFSET)[0]
         stats["skill_points"] = struct.unpack_from("<I", slot_data, SKILL_POINTS_OFFSET)[0]
         stats["hp"] = struct.unpack_from("<I", slot_data, HP_OFFSET)[0]
-        stats["souls"] = struct.unpack_from("<I", slot_data, SOULS_OFFSET)[0]
+        stats["sen"] = struct.unpack_from("<I", slot_data, SOULS_OFFSET)[0]
     except struct.error:
         pass
     return stats

@@ -27,17 +27,66 @@ class BeadLocation:
 # Seed list -- expand/verify against the full dump and in-game locations.
 # This is intentionally incomplete; treat it as a starting skeleton.
 PRAYER_BEADS: list[BeadLocation] = [
-    BeadLocation("Prayer Bead (Ashina Outskirts - Gun Fort area)", "Ashina Outskirts", 1100310),
-    BeadLocation("Prayer Bead (Ashina Castle)", "Ashina Castle", 1110170),
-    BeadLocation("Prayer Bead (Ashina Reservoir)", "Ashina Reservoir", 1000500),
-    BeadLocation("Prayer Bead (Sunken Valley)", "Sunken Valley", 1700020),
-    BeadLocation("Prayer Bead (Sunken Valley - alt)", "Sunken Valley", 1700030),
-    BeadLocation("Prayer Bead (Sunken Valley - alt 2)", "Sunken Valley", 1700040),
-    BeadLocation("Prayer Bead (Senpou Temple)", "Senpou Temple", 2000040),
-    BeadLocation("Prayer Bead (Mibu Village)", "Mibu Village", 1500040),
-    BeadLocation("Prayer Bead (Mibu Village - alt)", "Mibu Village", 1500320),
-    BeadLocation("Prayer Bead (Fountainhead Palace)", "Fountainhead Palace", 2500020),
-    # ... continue for the rest -- there are 21 total across the game.
+
+
+# --------------------------
+# Bosses / Mini Bosses 
+# --------------------------
+
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+
+#--------------------------
+# Treasure / Floor Pickups
+#--------------------------
+
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+
+#--------------------------
+# Shop Purchases
+#--------------------------
+
+BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+
+
+
 ]
 
 
