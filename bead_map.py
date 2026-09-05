@@ -61,7 +61,6 @@ BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
 BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
 BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
 BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
 
 #--------------------------
 # Treasure / Floor Pickups
@@ -83,17 +82,18 @@ BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
 # Shop Purchases
 #--------------------------
 
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("", "", event_flag_id = None, notes=""),
 
 
 
 ]
 
+"""Return {bead_name: picked_up_bool} for every mapped bead."""
 
 def get_bead_state(slot_data: bytes) -> dict[str, bool]:
-    """Return {bead_name: picked_up_bool} for every mapped bead.
-    Requires event_flag_id to be filled in on each BeadLocation first."""
-    from event_flags import read_flag  # local import to avoid unused-arg lint noise
+
+    # local import to avoid unused-arg lint noise
+    from event_flags import read_flag  
 
     result = {}
     for bead in PRAYER_BEADS:
@@ -101,4 +101,4 @@ def get_bead_state(slot_data: bytes) -> dict[str, bool]:
             result[bead.name] = None  # not yet mapped
             continue
         result[bead.name] = read_flag(slot_data, bead.event_flag_id)
-    return result
+    return results

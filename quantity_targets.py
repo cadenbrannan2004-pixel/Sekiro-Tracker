@@ -18,7 +18,8 @@ class QuantityTarget:
 
 
 QUANTITY_TARGETS: list[QuantityTarget] = [
-    QuantityTarget("Lapis Lazuli", 6400, target = 10),  # set target to whatever you're tracking toward
+    # set targets to whatever   
+    QuantityTarget("Lapis Lazuli", 6400, target = 10),  
     QuantityTarget("Treasure Carp Scale", 10000, target = 42),  
     QuantityTarget("Shinobi Esoteric Text", 2920, target = 1), 
     QuantityTarget("Prosthetic Esoteric Text", 2921, target = 1),
