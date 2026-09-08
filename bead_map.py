@@ -33,17 +33,17 @@ PRAYER_BEADS: list[BeadLocation] = [
 # Bosses / Mini Bosses 
 # --------------------------
 
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("Samurai general Naomori Kawaradi", "Ashina Outskirts", item_lot_id = None , event_flag_id = 6723, notes="#1"),
+BeadLocation("Chained Ogre", "Ashina Outskirts", item_lot_id = None , event_flag_id = 6710, notes="#2"),
+BeadLocation("Samurai General Tenzen Yamauchi", "Ashina Outskirts", item_lot_id = None , event_flag_id = 6762, notes="#3"),
+BeadLocation("Blazing Bull", "Ashina Outskirts", item_lot_id = None , event_flag_id = 6711, notes="#5"),
+BeadLocation("Shinobi Hunter Enshin of Misen", "Hirata Estate", item_lot_id = None , event_flag_id = 6763, notes="#6"),
+BeadLocation("Juzuo the Drunkard ", "Hirata Estate", item_lot_id = None , event_flag_id = 6764, notes="#7"),
+BeadLocation("Lone Shadow Swordsman - Depths Cave", "Ashina Castle", item_lot_id = None , event_flag_id = 6770, notes="#9"),
+BeadLocation("Seven Spears Shikibu Toshikatsu", "Ashina Castle", item_lot_id = None , event_flag_id = 6769, notes="#10"),
+BeadLocation("Samurai General Kuramosuke Matsumoto", "Ashina Castle", item_lot_id = None , event_flag_id = None, notes="#11"),
+BeadLocation("Ashina Elite Jinsuke Saze", "Ashina Castle", item_lot_id = None , event_flag_id = 6767, notes="#13"),
+BeadLocation("Snake Eyes - Gun Fort", "Sunken Valley", item_lot_id = None , event_flag_id = 6773, notes="#16"),
 BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
 BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
 BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
@@ -66,10 +66,10 @@ BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
 # Treasure / Floor Pickups
 #--------------------------
 
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("Attic Chest, Ashina Castle Gate", "Ashina Outskirts", item_lot_id = None , event_flag_id = 6788, notes="#4"),
+BeadLocation("Hidden Wall - Main Hall", "Hirata Estate", item_lot_id = None , event_flag_id = 6789, notes="#8"),
+BeadLocation("Hidden Wall - Map Room", "Ashina Castle", item_lot_id = None , event_flag_id = None, notes="#12"),
+BeadLocation("Grave Mounds", "Sunken Valley", item_lot_id = None , event_flag_id = 6792, notes="#15"),
 BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
 BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
 BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
@@ -82,7 +82,7 @@ BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
 # Shop Purchases
 #--------------------------
 
-BeadLocation("", "", event_flag_id = None, notes=""),
+BeadLocation("Dungeon Entrance Merchent", "Ashina Castle", event_flag_id = None, notes="#14"),
 
 
 
