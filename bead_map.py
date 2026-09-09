@@ -17,15 +17,13 @@ from dataclasses import dataclass
 
 @dataclass
 class BeadLocation:
-    name: str            # display name for your tracker UI
+    name: str            # display name for tracker UI
     region: str           # in-game area
     item_lot_id: int      # from the item lot dump
     event_flag_id: int | None = None  # fill in once discovered
     notes: str = ""
 
 
-# Seed list -- expand/verify against the full dump and in-game locations.
-# This is intentionally incomplete; treat it as a starting skeleton.
 PRAYER_BEADS: list[BeadLocation] = [
 
 
@@ -44,47 +42,45 @@ BeadLocation("Seven Spears Shikibu Toshikatsu", "Ashina Castle", item_lot_id = N
 BeadLocation("Samurai General Kuramosuke Matsumoto", "Ashina Castle", item_lot_id = None , event_flag_id = None, notes="#11"),
 BeadLocation("Ashina Elite Jinsuke Saze", "Ashina Castle", item_lot_id = None , event_flag_id = 6767, notes="#13"),
 BeadLocation("Snake Eyes - Gun Fort", "Sunken Valley", item_lot_id = None , event_flag_id = 6773, notes="#16"),
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
-
+BeadLocation("Long-Armed Centipede Giraffe", "Sunken Valley", item_lot_id = None , event_flag_id = 6774, notes="#17"),
+BeadLocation("Armored Warrior", "Senpou Temple", item_lot_id = None , event_flag_id = 6715, notes="#19"),
+BeadLocation("Long-Armed Centipede Sen'un", "", item_lot_id = None , event_flag_id = 6772, notes="#20"),
+BeadLocation("Snake Eyes Shirafuji", "Ashina Depths", item_lot_id = None , event_flag_id = 6775, notes="#23"),
+BeadLocation("Dual Ape - Bead Drop 1", "Ashina Depths", item_lot_id = None , event_flag_id = None, notes="#24"),
+BeadLocation("Dual Ape - Bead Drop 2", "Ashina Depths", item_lot_id = None , event_flag_id = None, notes="#25"),
+BeadLocation("Tojujiro the Glutton - Hidden Forest", "Ashina Depths", item_lot_id = None , event_flag_id = None, notes="#26"),
+BeadLocation("O'rin of the Water", "Ashina Depths", item_lot_id = None , event_flag_id = None, notes="#27"),
+BeadLocation("Chained Ogre Antechamber", "Ashina Castle (Dusk)", item_lot_id = None , event_flag_id = None, notes="#30"),
+BeadLocation("Lone Shadow Masanaga the Spear Bearer", "Ashina Castle (Dusk)", item_lot_id = None , event_flag_id = None, notes="#31"),
+BeadLocation("Lone Shadow Vilehand - Upper Dojo", "Ashina Castle (Dusk)", item_lot_id = None , event_flag_id = None, notes="#32"),
+BeadLocation("Lone Shadow Masanaga - Past", "Hirata Estate (Owls Memory)", item_lot_id = None , event_flag_id = None, notes="#33"),
+BeadLocation("Juzou the Drunkard - Past", "Hirata Estate (Owls Memory)", item_lot_id = None , event_flag_id = None, notes="#34"),
+BeadLocation("Sakura Bull of the Palace", "Fountainhead Palace", item_lot_id = None , event_flag_id = None, notes="#35"),
+BeadLocation("Okami Leader Shizu", "Fountainhead Palace", item_lot_id = None , event_flag_id = None, notes="#36"),
+BeadLocation("Red-Eyes Ashina Elite", "Ashina Castle (Night)", item_lot_id = None , event_flag_id = None, notes="#38"),
+BeadLocation("Shigekichi of the Red Guard - Drunkard", "Ashina Castle  (Night)", item_lot_id = None , event_flag_id = None, notes="#39"),
+BeadLocation("Seven Ashina Spears - Ashina Reservoir", "Ashina Castle (Night)", item_lot_id = None , event_flag_id = None, notes="#40"),
+    
 #--------------------------
 # Treasure / Floor Pickups
 #--------------------------
 
 BeadLocation("Attic Chest, Ashina Castle Gate", "Ashina Outskirts", item_lot_id = None , event_flag_id = 6788, notes="#4"),
 BeadLocation("Hidden Wall - Main Hall", "Hirata Estate", item_lot_id = None , event_flag_id = 6789, notes="#8"),
-BeadLocation("Hidden Wall - Map Room", "Ashina Castle", item_lot_id = None , event_flag_id = None, notes="#12"),
+BeadLocation("Hidden Wall - Map Room", "Ashina Castle", item_lot_id = None , event_flag_id = 6790, notes="#12"),
 BeadLocation("Grave Mounds", "Sunken Valley", item_lot_id = None , event_flag_id = 6792, notes="#15"),
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
-BeadLocation("", "", item_lot_id = None , event_flag_id = None, notes=""),
+BeadLocation("Floor Boards - Cave System", "Sunken Valley", item_lot_id = None , event_flag_id = 6793, notes="#18"),
+BeadLocation("Pond Cave - Buddha Statue", "Senpou Temple", item_lot_id = None , event_flag_id = None, notes="#22"),
+BeadLocation("Poison Lake - Buddha Head", "Ashina Depths", item_lot_id = None , event_flag_id = 6794, notes="#24"),
+BeadLocation("Head Priests Temple - Hidden Attic Shrine", "Ashina Depths", item_lot_id = None , event_flag_id = None, notes="#28"),
+BeadLocation("Mibu Village River Chest", "Ashina Depths", item_lot_id = None , event_flag_id = None, notes="#29"),
+BeadLocation("Underwater Chest - Carp Sceleton", "Fountainhead Palace", item_lot_id = None , event_flag_id = None, notes="#37"),
 
 #--------------------------
 # Shop Purchases
 #--------------------------
 
-BeadLocation("Dungeon Entrance Merchent", "Ashina Castle", event_flag_id = None, notes="#14"),
-
-
+BeadLocation("Dungeon Entrance Merchent", "Ashina Castle", event_flag_id = 6768, notes="#14")
 
 ]
 
