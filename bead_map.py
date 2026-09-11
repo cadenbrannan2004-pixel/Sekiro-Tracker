@@ -19,7 +19,7 @@ from dataclasses import dataclass
 class BeadLocation:
     name: str            # display name for tracker UI
     region: str           # in-game area
-    item_lot_id: int      # from the item lot dump
+    item_lot_id: int | None = None  # from the item lot dump; None until confirmed
     event_flag_id: int | None = None  # fill in once discovered
     notes: str = ""
 
@@ -31,7 +31,7 @@ PRAYER_BEADS: list[BeadLocation] = [
 # Bosses / Mini Bosses 
 # --------------------------
 
-BeadLocation("Samurai general Naomori Kawaradi", "Ashina Outskirts", item_lot_id = None , event_flag_id = 6723, notes="#1"),
+BeadLocation("Samurai general Naomori Kawaradi", "Ashina Outskirts" , event_flag_id = 6723, notes="#1"),
 BeadLocation("Chained Ogre", "Ashina Outskirts", item_lot_id = None , event_flag_id = 6710, notes="#2"),
 BeadLocation("Samurai General Tenzen Yamauchi", "Ashina Outskirts", item_lot_id = None , event_flag_id = 6762, notes="#3"),
 BeadLocation("Blazing Bull", "Ashina Outskirts", item_lot_id = None , event_flag_id = 6711, notes="#5"),
@@ -97,4 +97,4 @@ def get_bead_state(slot_data: bytes) -> dict[str, bool]:
             result[bead.name] = None  # not yet mapped
             continue
         result[bead.name] = read_flag(slot_data, bead.event_flag_id)
-    return results
+    return result

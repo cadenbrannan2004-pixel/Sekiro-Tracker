@@ -40,7 +40,7 @@ def main():
         slot = extract_slot(data, slot_index)
 
         stats = read_stats(slot)
-        print("Stats (eyeball these against what you see in-game):")
+        print("Stats:")
         for key, value in stats.items():
             print(f"  {key}: {value}")
 

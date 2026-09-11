@@ -24,8 +24,9 @@ FLAG_TABLE_OFFSET: int | None = None
 # ------------------------------------------------------------------------
 
 
-def read_flag(slot_data: bytes, flag_id: int, table_offset: int | None = None) -> bool:
-    """Read a single event flag's boolean state.
+def read_flag(slot_data: bytes, flag_id: int, table_offset: int | None = None) -> bool | None:
+    """Read a single event flag's boolean state, or None if the flag table
+    offset hasn't been discovered yet (run find_flag_table_offset() first).
 
     FromSoft event flags are typically packed MSB-first within each byte,
     indexed by flag_id. This matches the layout used across the DS/Sekiro
@@ -33,10 +34,7 @@ def read_flag(slot_data: bytes, flag_id: int, table_offset: int | None = None) -
     """
     offset = table_offset if table_offset is not None else FLAG_TABLE_OFFSET
     if offset is None:
-        raise RuntimeError(
-            "FLAG_TABLE_OFFSET is not set yet -- run find_flag_table_offset() "
-            "against two save snapshots first."
-        )
+        return None
     byte_index = flag_id // 8
     bit_index = 7 - (flag_id % 8)  # MSB-first; flip to `flag_id % 8` if wrong
     byte = slot_data[offset + byte_index]
