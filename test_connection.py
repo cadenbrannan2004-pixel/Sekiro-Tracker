@@ -54,10 +54,7 @@ def main():
             print(f"  {name}: {info['have']} / {info['target']}")
 
         beads_mapped = sum(1 for v in report["prayer_beads"].values() if v is not None)
-        skills_mapped = sum(1 for v in report["skills"].values() if v is not None)
         print(f"\nPrayer beads mapped so far: {beads_mapped} "
-              f"(rest show null -- expected, not an error)")
-        print(f"Skills mapped so far: {skills_mapped} "
               f"(rest show null -- expected, not an error)")
         print()
 

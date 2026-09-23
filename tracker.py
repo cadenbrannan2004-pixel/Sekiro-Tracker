@@ -47,10 +47,9 @@ def run():
 
             beads_done = sum(1 for v in report["prayer_beads"].values() if v)
             tools_missing = len(report["prosthetic_tools"]["missing"])
-            skills_done = sum(1 for v in report["skills"].values() if v)
             print(
                 f"Save changed -> beads: {beads_done}, "
-                f"skills: {skills_done}, prosthetics missing: {tools_missing}"
+                f"prosthetics missing: {tools_missing}"
             )
 
         time.sleep(POLL_INTERVAL_SECONDS)
