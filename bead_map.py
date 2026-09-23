@@ -7,9 +7,6 @@ you still need to fill in per-location (see event_flags.find_flag_table_offset
 and cross-reference against SoulSplitter's Sekiro event flag list / a
 Sekiro fan wiki's item location pages, which document flag IDs per pickup).
 
-Note: some lot IDs in the dump (e.g. 1010/1020 "Prayer Bead") were tagged
-[Unused/Unknown] with no location -- only include entries here once you've
-confirmed they're real, reachable world pickups, not cut content.
 """
 
 from dataclasses import dataclass

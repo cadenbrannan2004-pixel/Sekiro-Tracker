@@ -5,15 +5,6 @@ Handles locating and loading the Sekiro PC save file, and extracting a
 single character slot's raw bytes. Slot layout (BND container) confirmed
 from alfizari/Sekiro-Save-Editor:
 
-    [0x000, 0x300)   header
-    10x slots, each:
-        [start, start + 0x100000)  userdata (the 1MB blob we care about)
-        + 0x10 bytes of inter-slot padding/checksum
-    remainder                      footer
-
-All the "offset" constants elsewhere in this project (inventory, keys,
-stats, and eventually event flags) are relative to the START of one
-slot's 1MB blob, not the whole file.
 """
 
 import os

@@ -6,6 +6,7 @@ Not needed for achievement tracking itself -- this exists purely so you
 have something immediately recognizable to eyeball-check against your
 real character, to confirm the save file / slot you're reading is
 actually the one you think it is.
+
 """
 
 import struct

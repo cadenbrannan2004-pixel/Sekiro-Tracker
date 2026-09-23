@@ -5,11 +5,6 @@ Base prosthetic tools (the 8 core tools, ignoring their upgrade variants
 which are just alternate item_ids for the same tool once upgraded at the
 Sculptor). IDs confirmed from alfizari's weapons.json.
 
-If you want to track SPECIFIC upgrade paths too (e.g. "do I have the
-Lazulite Axe specifically") rather than just "do I have some version of
-the Axe," add those ids as separate ProstheticTool entries -- ownership
-of ANY variant id under the same base tool usually implies you unlocked
-the base tool at minimum.
 """
 
 from dataclasses import dataclass
