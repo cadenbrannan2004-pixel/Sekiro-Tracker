@@ -9,3 +9,4 @@ __pycache__/
 saves/
 split_files/
 achievement_state.json
+ending_state.json
