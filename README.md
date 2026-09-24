@@ -2,7 +2,7 @@
 
 # Sekiro Achievement Tracker
 
-A Python tool that reads Sekiro: Shadows Die Twice's save file directly and automatically tracks progress toward 100% completion — prayer beads, skills, prosthetic tools, boss memories, and key resources.
+A Python tool that reads Sekiro: Shadows Die Twice's save file directly and automatically tracks progress toward 100% completion(prayer beads, skills, prosthetic tools, boss memories, and key resources).
 
 Built as a personal project to learn binary file reverse-engineering, game save formats, and full-stack Python development.
 
@@ -13,7 +13,7 @@ Sekiro doesn't have a built-in completion tracker, and many collectibles (like P
 It tracks:
 - **Prayer Beads** (40 locations, grouped by region and source: boss drop, treasure, or shop purchase)
 - **Skills** (grouped by skill tree)
-- **Prosthetic Tools** (all 9 base tools, upgrade-tier-aware so upgrading never falsely marks a tool as "missing")
+- **Prosthetic Tools** (all 9 base tools)
 - **Boss Memories** (all 14 major bosses, tracked via inventory rather than flags)
 - **Key resources** (e.g. Lapis Lazuli, with configurable target thresholds)
 - **Endings** (manually checked off, since these are one-off story choices rather than something worth automating)
@@ -22,9 +22,9 @@ It tracks:
 
 Sekiro's PC save (`S0000.sl2`) is a proprietary binary container shared across FromSoftware's Souls engine. This project:
 
-1. **Parses the save container** — splits it into its 10 individual character save slots
+1. **Parses the save container** splits it into its 10 individual character save slots
 2. **Reads confirmed inventory offsets** (ported from community save-editor research) to check owned items, weapons, and goods quantities directly
-3. **Reads a custom-discovered event flag table** — found empirically by diffing before/after save snapshots around known item pickups — to determine one-time pickup states that aren't reflected in inventory alone
+3. **Reads a custom-discovered event flag table** found empirically by diffing before/after save snapshots around known item pickups to determine one-time pickup states that aren't reflected in inventory alone
 4. **Cross-references flag IDs** captured live via [SoulSplitter](https://github.com/FrankvdStam/SoulSplitter)'s event flag logger while playing, mapping each one to a specific named location
 5. **Serves the result** two ways: a headless watch loop that writes a JSON snapshot on every save change, or a local Flask dashboard with live-updating
 
