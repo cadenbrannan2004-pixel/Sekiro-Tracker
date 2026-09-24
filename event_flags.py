@@ -4,15 +4,6 @@ event_flags.py
 This is the missing piece alfizari's editor doesn't provide: reading the
 per-location "has this world item been picked up" event flag bits.
 
-Prayer Beads all share one stackable item_id, so inventory quantity alone
-can't tell you WHICH bead(s) you have. The game instead flips a unique
-event flag per pickup location, matching the item lot IDs in your data
-dump (e.g. lot 1010, 1020, 1060, 1500, 1140, 1560 = "Prayer Bead" rows).
-
-FLAG_TABLE_OFFSET below is UNKNOWN and must be found empirically -- see
-find_flag_table_offset() for a diffing strategy. Once you find it, the
-rest of this module (bit indexing/reading) should just work, since FromSoft
-event flag tables are a straightforward packed bit array indexed by flag ID.
 """
 
 from __future__ import annotations

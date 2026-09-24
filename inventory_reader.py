@@ -2,18 +2,8 @@
 inventory_reader.py
 
 Parses the confirmed inventory array (goods + weapons + armor), ported
-from alfizari/Sekiro-Save-Editor's main_no_ai.py. Unlike event flags,
-these offsets are already known and working -- no discovery needed.
+from alfizari/Sekiro-Save-Editor's main_no_ai.py. 
 
-Layout: a flat array of 16-byte records starting at 0x8F70C, running for
-0x7000 bytes, each record = (gaitem_handle: u32, item_id: u32,
-quantity: u32, index: u32), little-endian.
-
-The top nibble of gaitem_handle tells you the item's category:
-    0x0 = empty slot
-    0x8 = weapon (includes prosthetic tools!)
-    0x9 = armor
-    0xB = good (includes key items like Lapis Lazuli)
 """
 
 from __future__ import annotations
