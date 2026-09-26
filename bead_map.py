@@ -1,11 +1,7 @@
 """
 bead_map.py
 
-Prayer Bead pickup locations, seeded from the item lot dump you already
-have. `item_lot_id` is confirmed from that data; `event_flag_id` is what
-you still need to fill in per-location (see event_flags.find_flag_table_offset
-and cross-reference against SoulSplitter's Sekiro event flag list / a
-Sekiro fan wiki's item location pages, which document flag IDs per pickup).
+Prayer Bead pickup locations
 
 """
 
@@ -41,7 +37,7 @@ BeadLocation("Ashina Elite Jinsuke Saze", "Ashina Castle", item_lot_id = None , 
 BeadLocation("Snake Eyes - Gun Fort", "Sunken Valley", item_lot_id = None , event_flag_id = 6773, notes="#16"),
 BeadLocation("Long-Armed Centipede Giraffe", "Sunken Valley", item_lot_id = None , event_flag_id = 6774, notes="#17"),
 BeadLocation("Armored Warrior", "Senpou Temple", item_lot_id = None , event_flag_id = 6715, notes="#19"),
-BeadLocation("Long-Armed Centipede Sen'un", "", item_lot_id = None , event_flag_id = 6772, notes="#20"),
+BeadLocation("Long-Armed Centipede Sen'un", "Senpou Temple", item_lot_id = None , event_flag_id = 6772, notes="#20"),
 BeadLocation("Snake Eyes Shirafuji", "Ashina Depths", item_lot_id = None , event_flag_id = 6775, notes="#23"),
 BeadLocation("Dual Ape - Bead Drop 1", "Ashina Depths", item_lot_id = None , event_flag_id = None, notes="#24"),
 BeadLocation("Dual Ape - Bead Drop 2", "Ashina Depths", item_lot_id = None , event_flag_id = None, notes="#25"),
@@ -68,7 +64,7 @@ BeadLocation("Hidden Wall - Map Room", "Ashina Castle", item_lot_id = None , eve
 BeadLocation("Grave Mounds", "Sunken Valley", item_lot_id = None , event_flag_id = 6792, notes="#15"),
 BeadLocation("Floor Boards - Cave System", "Sunken Valley", item_lot_id = None , event_flag_id = 6793, notes="#18"),
 BeadLocation("Pond Cave - Buddha Statue", "Senpou Temple", item_lot_id = None , event_flag_id = None, notes="#22"),
-BeadLocation("Poison Lake - Buddha Head", "Ashina Depths", item_lot_id = None , event_flag_id = 6794, notes="#24"),
+BeadLocation("Poison Lake - Buddha Head", "Ashina Depths", item_lot_id = None , event_flag_id = 6794, notes="#21"),
 BeadLocation("Head Priests Temple - Hidden Attic Shrine", "Ashina Depths", item_lot_id = None , event_flag_id = None, notes="#28"),
 BeadLocation("Mibu Village River Chest", "Ashina Depths", item_lot_id = None , event_flag_id = None, notes="#29"),
 BeadLocation("Underwater Chest - Carp Sceleton", "Fountainhead Palace", item_lot_id = None , event_flag_id = None, notes="#37"),
