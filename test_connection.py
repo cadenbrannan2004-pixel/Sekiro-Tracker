@@ -2,11 +2,12 @@
 test_connection.py
 
 Run this ONCE, manually, to confirm the whole pipeline actually works
-against your real save before trusting tracker.py's automatic loop.
+against your real save before trusting tracker.py's automatic loop. This will
+allow you to check if your stats appear correct in the terminal before that loop runs.
 
     uv run test_connection.py
 
-This does NOT modify anything -- pure read-only sanity check. Safe to
+This does NOT modify anything, pure read-only sanity check. Safe to
 run with the game open or closed.
 """
 
@@ -31,7 +32,7 @@ def main():
     print(f"Active-looking slots: {active}\n")
 
     if not active:
-        print("No active slots detected -- something's off with the file "
+        print("No active slots detected and something's off with the file "
               "or the 'active slot' heuristic needs adjusting.")
         return
 
