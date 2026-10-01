@@ -41,7 +41,7 @@ BeadLocation("Long-Armed Centipede Sen'un", "Senpou Temple", item_lot_id = None 
 BeadLocation("Snake Eyes Shirafuji", "Ashina Depths", item_lot_id = None , event_flag_id = 6775, notes="#23"),
 BeadLocation("Dual Ape - Bead Drop 1", "Ashina Depths", item_lot_id = None , event_flag_id = None, notes="#24"),
 BeadLocation("Dual Ape - Bead Drop 2", "Ashina Depths", item_lot_id = None , event_flag_id = None, notes="#25"),
-BeadLocation("Tojujiro the Glutton - Hidden Forest", "Ashina Depths", item_lot_id = None , event_flag_id = None, notes="#26"),
+BeadLocation("Tojujiro the Glutton - Hidden Forest", "Ashina Depths", item_lot_id = None , event_flag_id = 6776, notes="#26"),
 BeadLocation("O'rin of the Water", "Ashina Depths", item_lot_id = None , event_flag_id = None, notes="#27"),
 BeadLocation("Chained Ogre Antechamber", "Ashina Castle (Dusk)", item_lot_id = None , event_flag_id = None, notes="#30"),
 BeadLocation("Lone Shadow Masanaga the Spear Bearer", "Ashina Castle (Dusk)", item_lot_id = None , event_flag_id = None, notes="#31"),
@@ -65,9 +65,9 @@ BeadLocation("Grave Mounds", "Sunken Valley", item_lot_id = None , event_flag_id
 BeadLocation("Floor Boards - Cave System", "Sunken Valley", item_lot_id = None , event_flag_id = 6793, notes="#18"),
 BeadLocation("Pond Cave - Buddha Statue", "Senpou Temple", item_lot_id = None , event_flag_id = None, notes="#22"),
 BeadLocation("Poison Lake - Buddha Head", "Ashina Depths", item_lot_id = None , event_flag_id = 6794, notes="#21"),
-BeadLocation("Head Priests Temple - Hidden Attic Shrine", "Ashina Depths", item_lot_id = None , event_flag_id = None, notes="#28"),
-BeadLocation("Mibu Village River Chest", "Ashina Depths", item_lot_id = None , event_flag_id = None, notes="#29"),
-BeadLocation("Underwater Chest - Carp Sceleton", "Fountainhead Palace", item_lot_id = None , event_flag_id = None, notes="#37"),
+BeadLocation("Head Priests Temple - Hidden Attic Shrine", "Ashina Depths", item_lot_id = None , event_flag_id = 6795, notes="#28"),
+BeadLocation("Mibu Village River Chest", "Ashina Depths", item_lot_id = None , event_flag_id = 6796, notes="#29"),
+BeadLocation("Underwater Chest - Carp Skeleton", "Fountainhead Palace", item_lot_id = None , event_flag_id = None, notes="#37"),
 
 #--------------------------
 # Shop Purchases
