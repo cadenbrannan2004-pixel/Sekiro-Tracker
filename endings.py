@@ -21,15 +21,22 @@ class Ending:
     name: str
     requirements: list[EndingRequirement]
 
+# Still needs URL links to a YT video explaining every ending but will add later
+
 
 ENDINGS: list[Ending] = [
-    # Still needs updating 
     Ending("return", "Return Ending (Dragon's Homecoming)", [
         EndingRequirement("return_genichiro", "Defeated Genichiro, Way of Tomoe (rooftop)"),
-        EndingRequirement("return_no_shura", "Have not triggered the Shura path"),
-        EndingRequirement("return_no_frozen_tears", "Have not obtained Frozen Tears (locks Purification/Immortal Severance)"),
+        EndingRequirement("shura_trigger", "Collected Holy Chapter: Infested, Lotus of the Palace, Shelter Stone, and Mortal Blade"),
+        EndingRequirement("return_no_frozen_tears", "Gave the Divine Child the Persimmon and acquired Kuro's Rice"),
+        EndingRequirement("return_no_frozen_tears", "Acquired Sweet Rice Balls from Kuro "),
+        EndingRequirement("return_no_frozen_tears", "Spoke to the Divine Child in Illusory Hall"),
+        EndingRequirement("return_no_frozen_tears", "Acquired Holy Chapter: Dragon's Return and gave it to Divine Child"),
+        EndingRequirement("return_no_frozen_tears", "Collected both Serpent Viscera and gave it to Divine Child"),
+        EndingRequirement("return_no_frozen_tears", "Recieved Frozen Tears from Divine Child"),
+        EndingRequirement("return_no_frozen_tears", "Defeated the Divine Dragon"),
         EndingRequirement("return_isshin", "Defeated Isshin, the Sword Saint"),
-        EndingRequirement("return_choice", "Chose to let Kuro live at the final dialogue"),
+        EndingRequirement("return_choice", "Gave Kuro the Frozen Tears and Divine Dragon Tears"),
     ]),
     Ending("purification", "Purification Ending", [
         EndingRequirement("severance_genichiro", "Defeated Genichiro, Way of Tomoe (rooftop)"),
