@@ -51,12 +51,12 @@ ENDINGS: list[Ending] = [
         EndingRequirement("shura_trigger", "Collected Lotus of the Palace, Shelter Stone, and Mortal Blade"),
         EndingRequirement("severance_choice", "Speak to Owl and chose to stay loyal to Kuro"),
         EndingRequirement("severance_final_boss", "Defeated Isshin, the Sword Saint"),
-        EndingRequirement("severance_final_boss", "Give Kuro only the Divine Dragon Tears"),
+        EndingRequirement("severance_final_boss", "Gave Kuro only the Divine Dragon Tears"),
     ]),
     Ending("shura", "Shura Ending", [
         EndingRequirement("severance_genichiro", "Defeated Genichiro, Way of Tomoe (rooftop)"),
         EndingRequirement("shura_trigger", "Collected Lotus of the Palace and Shelter Stone"),
-        EndingRequirement("shura_trigger", "Speak to Owl and chose the Shura path through the Iron Code"),
+        EndingRequirement("shura_trigger", "Spoke to Owl and chose the Shura path through the Iron Code"),
         EndingRequirement("shura_final_boss", "Defeated Emma and Isshin Ashina"),
     ]),
 ]
