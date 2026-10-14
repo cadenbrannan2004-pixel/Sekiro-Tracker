@@ -1,56 +1,21 @@
 """
 event_flags.py
 
-This is the missing piece alfizari's editor doesn't provide: reading the
-per-location "has this world item been picked up" event flag bits.
-
 """
 
 from __future__ import annotations
 
-# --- TO BE DISCOVERED -------------------------------------------------
-# Byte offset (relative to the start of a slot's 1MB blob) where the
-# event flag bit array begins.
-FLAG_TABLE_OFFSET: int | None = None
-# ------------------------------------------------------------------------
+BLOCK_OFFSETS: dict[int, int] = {
+    6: 0x334,
+}
 
 
-def read_flag(slot_data: bytes, flag_id: int, table_offset: int | None = None) -> bool | None:
-    """Read a single event flag's boolean state, or None if the flag table
-    offset hasn't been discovered yet (run find_flag_table_offset() first).
-
-    FromSoft event flags are typically packed MSB-first within each byte,
-    indexed by flag_id. 
-    """
-    offset = table_offset if table_offset is not None else FLAG_TABLE_OFFSET
-    if offset is None:
+def read_flag(slot_data: bytes, flag_id: int) -> bool | None:
+    """True/False for a flag, or None if its block's offset isn't known yet."""
+    block_start = BLOCK_OFFSETS.get(flag_id // 1000)
+    if block_start is None:
         return None
-    byte_index = flag_id // 8
-    bit_index = 7 - (flag_id % 8)  # MSB-first; flip to `flag_id % 8` if wrong
-    byte = slot_data[offset + byte_index]
-    return bool((byte >> bit_index) & 1)
-
-
-def find_flag_table_offset(before: bytes, after: bytes, chunk_size: int = 0x2000) -> list[int]:
-    """Diff two same-slot snapshots (before/after picking up ONE known
-    item, saved and re-read in between) and return byte offsets where
-    exactly one or a few bits differ -- candidate locations for the flag
-    table. Run this a few times with different single pickups and
-    intersect the candidate offsets to narrow it down fast.
-    """
-    if len(before) != len(after):
-        raise ValueError("snapshots must be the same length (same slot layout)")
-
-    candidates = []
-    for offset in range(0, len(before) - chunk_size, chunk_size):
-        b_chunk = before[offset:offset + chunk_size]
-        a_chunk = after[offset:offset + chunk_size]
-        if b_chunk == a_chunk:
-            continue
-        diff_bytes = sum(1 for x, y in zip(b_chunk, a_chunk) if x != y)
-        # A flag flip changes exactly one byte by exactly one bit (a small
-        # value change). Inventory/stat changes tend to touch many bytes
-        # or larger multi-byte valueso favor chunks with few diffs.
-        if diff_bytes <= 3:
-            candidates.append(offset)
-    return candidates
+    m = flag_id % 1000
+    word_offset = block_start + (m // 32) * 4
+    word = int.from_bytes(slot_data[word_offset:word_offset + 4], "little")
+    return bool(word & (1 << (31 - m % 32)))

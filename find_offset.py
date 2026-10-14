@@ -2,6 +2,8 @@
 
 find_offset.py
 
+Not written by me but ai as a tool to find the offset of the prayer bead table in Sekiro save files.
+
 Helper for discovering event_flags.FLAG_TABLE_OFFSET empirically.
 
 The idea: pick up ONE bead between two save snapshots, diff them, and find
