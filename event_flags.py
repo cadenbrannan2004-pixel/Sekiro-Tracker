@@ -20,8 +20,7 @@ def read_flag(slot_data: bytes, flag_id: int, table_offset: int | None = None) -
     offset hasn't been discovered yet (run find_flag_table_offset() first).
 
     FromSoft event flags are typically packed MSB-first within each byte,
-    indexed by flag_id. This matches the layout used across the DS/Sekiro
-    family -- verify against a couple of known flags before trusting it.
+    indexed by flag_id. 
     """
     offset = table_offset if table_offset is not None else FLAG_TABLE_OFFSET
     if offset is None:
@@ -51,7 +50,7 @@ def find_flag_table_offset(before: bytes, after: bytes, chunk_size: int = 0x2000
         diff_bytes = sum(1 for x, y in zip(b_chunk, a_chunk) if x != y)
         # A flag flip changes exactly one byte by exactly one bit (a small
         # value change). Inventory/stat changes tend to touch many bytes
-        # or larger multi-byte values -- so favor chunks with few diffs.
+        # or larger multi-byte valueso favor chunks with few diffs.
         if diff_bytes <= 3:
             candidates.append(offset)
     return candidates

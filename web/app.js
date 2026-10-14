@@ -51,6 +51,63 @@ function renderTools(listEl, countEl, owned) {
   renderChecklist(listEl, countEl, entries);
 }
 
+let selectedSlot = null;
+let lastData = null;
+
+try { selectedSlot = localStorage.getItem("selectedSlot"); } catch (e) { /* storage unavailable */ }
+
+function slotLabel(id, entry) {
+  const ng = entry.stats && entry.stats.ng_plus;
+  const base = `Slot ${Number(id) + 1}`;
+  return ng === undefined ? base : `${base} · ${ng === 0 ? "NG" : "NG+" + ng}`;
+}
+
+function renderTabs(slots) {
+  const nav = document.getElementById("slot-tabs");
+  nav.innerHTML = "";
+  for (const [id, entry] of Object.entries(slots)) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "tab" + (id === selectedSlot ? " active" : "");
+    btn.textContent = slotLabel(id, entry);
+    btn.addEventListener("click", () => {
+      selectedSlot = id;
+      try { localStorage.setItem("selectedSlot", id); } catch (e) { /* ignore */ }
+      renderAll();
+    });
+    nav.appendChild(btn);
+  }
+}
+
+function renderAll() {
+  if (!lastData) return;
+  const slots = lastData.slots || {};
+  const ids = Object.keys(slots);
+  if (ids.length === 0) {
+    setStatus("no active save slots found", "error");
+    renderTabs({});
+    return;
+  }
+  if (!(selectedSlot in slots)) selectedSlot = ids[0];  // saved choice vanished -> fall back
+  renderTabs(slots);
+
+  const report = slots[selectedSlot].report;
+  renderChecklist(
+    document.getElementById("beads-list"),
+    document.getElementById("beads-count"),
+    Object.entries(report.prayer_beads)
+  );
+  renderTools(
+    document.getElementById("tools-list"),
+    document.getElementById("tools-count"),
+    report.prosthetic_tools.owned
+  );
+  renderQuantities(
+    document.getElementById("quantities-list"),
+    report.quantity_targets
+  );
+}
+
 async function refreshState() {
   try {
     const res = await fetch("/api/state");
@@ -59,25 +116,11 @@ async function refreshState() {
       setStatus(body.error || `error ${res.status}`, "error");
       return;
     }
-    const report = await res.json();
+    lastData = await res.json();
     setStatus("connected", "ok");
-
-    renderChecklist(
-      document.getElementById("beads-list"),
-      document.getElementById("beads-count"),
-      Object.entries(report.prayer_beads)
-    );
-    renderTools(
-      document.getElementById("tools-list"),
-      document.getElementById("tools-count"),
-      report.prosthetic_tools.owned
-    );
-    renderQuantities(
-      document.getElementById("quantities-list"),
-      report.quantity_targets
-    );
+    renderAll();
   } catch (err) {
-    setStatus("server unreachable -- is server.py running?", "error");
+    setStatus("server unreachable, is server.py running?", "error");
   }
 }
 

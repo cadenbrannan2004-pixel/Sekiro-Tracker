@@ -135,3 +135,23 @@ main {
 .ending input[type="checkbox"] {
   margin-top: 2px;
 }
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 14px 28px 0;
+}
+
+.tab {
+  background: var(--card);
+  color: var(--dim);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 14px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.tab:hover { color: var(--text); }
+.tab.active { color: var(--text); border-color: var(--accent); }
