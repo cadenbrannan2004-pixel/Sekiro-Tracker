@@ -34,9 +34,13 @@ No game files are modified. Everything is read-only
 
 Prayer bead and skill flag IDs are discovered incrementally through manual play, using SoulSplitter's live event flag logger combined with save-file diffing. See `bead_map.py` and `skill_map.py` for current mapping progress or unmapped entries report `null`. Also working to learn the frontend/gui portion through ai-assistance and other media options. 
 
-# Google Sheet for all triggered event flags for each prayer bead drop in the game: 
+# Google Sheet for all triggered event flags for each prayer bead/gourd seed drop in the game: 
 
+Prayer Bead: 
 https://docs.google.com/spreadsheets/d/17YkjiKnKZTHUHFSkf_SZK5KQrgrUO5_V1XxE4lfPpLA/edit?gid=0#gid=0
+
+Gourd Seed:
+https://docs.google.com/spreadsheets/d/1BUwN0m1CTA2TQ7v4epO_x-rUQetOO8YpWVOXCfMXSrE/edit?gid=0#gid=0
 
 ## Credits
 
