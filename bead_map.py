@@ -12,8 +12,8 @@ from dataclasses import dataclass
 class BeadLocation:
     name: str            # display name for tracker UI
     region: str           # in-game area
-    item_lot_id: int | None = None  # from the item lot dump; None until confirmed
-    event_flag_id: int | None = None  # fill in once discovered
+    item_lot_id: int | None = None  # from the item lot dump but not required
+    event_flag_id: int | None = None  # filled in once discovered empirically and needed for tracker
     notes: str = ""
 
 
@@ -43,11 +43,11 @@ BeadLocation("Dual Ape - Bead Drop 1", "Ashina Depths", item_lot_id = None , eve
 BeadLocation("Dual Ape - Bead Drop 2", "Ashina Depths", item_lot_id = None , event_flag_id = None, notes="#25"),
 BeadLocation("Tojujiro the Glutton - Hidden Forest", "Ashina Depths", item_lot_id = None , event_flag_id = 6776, notes="#26"),
 BeadLocation("O'rin of the Water", "Ashina Depths", item_lot_id = None , event_flag_id = None, notes="#27"),
-BeadLocation("Chained Ogre Antechamber", "Ashina Castle (Dusk)", item_lot_id = None , event_flag_id = None, notes="#30"),
-BeadLocation("Lone Shadow Masanaga the Spear Bearer", "Ashina Castle (Dusk)", item_lot_id = None , event_flag_id = None, notes="#31"),
-BeadLocation("Lone Shadow Vilehand - Upper Dojo", "Ashina Castle (Dusk)", item_lot_id = None , event_flag_id = None, notes="#32"),
-BeadLocation("Lone Shadow Masanaga - Past", "Hirata Estate (Owls Memory)", item_lot_id = None , event_flag_id = None, notes="#33"),
-BeadLocation("Juzou the Drunkard - Past", "Hirata Estate (Owls Memory)", item_lot_id = None , event_flag_id = None, notes="#34"),
+BeadLocation("Chained Ogre Antechamber", "Ashina Castle (Dusk)", item_lot_id = None , event_flag_id = 6778, notes="#30"),
+BeadLocation("Lone Shadow Masanaga the Spear Bearer", "Ashina Castle (Dusk)", item_lot_id = None , event_flag_id = 6780, notes="#31"),
+BeadLocation("Lone Shadow Vilehand - Upper Dojo", "Ashina Castle (Dusk)", item_lot_id = None , event_flag_id = 6779, notes="#32"),
+BeadLocation("Lone Shadow Masanaga - Past", "Hirata Estate (Owls Memory)", item_lot_id = None , event_flag_id = 6781, notes="#33"),
+BeadLocation("Juzou the Drunkard - Past", "Hirata Estate (Owls Memory)", item_lot_id = None , event_flag_id = 6782, notes="#34"),
 BeadLocation("Sakura Bull of the Palace", "Fountainhead Palace", item_lot_id = None , event_flag_id = None, notes="#35"),
 BeadLocation("Okami Leader Shizu", "Fountainhead Palace", item_lot_id = None , event_flag_id = None, notes="#36"),
 BeadLocation("Red-Eyes Ashina Elite", "Ashina Castle (Night)", item_lot_id = None , event_flag_id = None, notes="#38"),
@@ -63,7 +63,7 @@ BeadLocation("Hidden Wall - Main Hall", "Hirata Estate", item_lot_id = None , ev
 BeadLocation("Hidden Wall - Map Room", "Ashina Castle", item_lot_id = None , event_flag_id = 6790, notes="#12"),
 BeadLocation("Grave Mounds", "Sunken Valley", item_lot_id = None , event_flag_id = 6792, notes="#15"),
 BeadLocation("Floor Boards - Cave System", "Sunken Valley", item_lot_id = None , event_flag_id = 6793, notes="#18"),
-BeadLocation("Pond Cave - Buddha Statue", "Senpou Temple", item_lot_id = None , event_flag_id = None, notes="#22"),
+BeadLocation("Pond Cave - Buddha Statue", "Senpou Temple", item_lot_id = None , event_flag_id = 6791, notes="#22"),
 BeadLocation("Poison Lake - Buddha Head", "Ashina Depths", item_lot_id = None , event_flag_id = 6794, notes="#21"),
 BeadLocation("Head Priests Temple - Hidden Attic Shrine", "Ashina Depths", item_lot_id = None , event_flag_id = 6795, notes="#28"),
 BeadLocation("Mibu Village River Chest", "Ashina Depths", item_lot_id = None , event_flag_id = 6796, notes="#29"),
