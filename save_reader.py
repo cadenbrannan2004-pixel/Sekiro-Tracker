@@ -44,13 +44,12 @@ def extract_slot(full_save_data: bytes, slot_index: int) -> bytes:
     if not (0 <= slot_index < NUM_SLOTS):
         raise ValueError(f"slot_index must be 0-{NUM_SLOTS - 1}")
     start = FIRST_SLOT_OFFSET + slot_index * SLOT_STRIDE
-    return full_save_data[start:start + SLOT_SIZE]
+    return full_save_data[start : start + SLOT_SIZE]
 
 
 def find_active_slots(full_save_data: bytes) -> list[int]:
     """Return indices of slots that look non-empty (very rough heuristic:
-    not all zero in the first chunk of the slot). Refine this once you
-    know a better 'slot in use' marker."""
+    not all zero in the first chunk of the slot)."""
     active = []
     for i in range(NUM_SLOTS):
         slot = extract_slot(full_save_data, i)
