@@ -29,3 +29,11 @@ def read_flag(slot_data: bytes, flag_id: int) -> bool | None:
     # Flags fill each word from the most significant bit down: the first flag
     # in a word is bit 31 (0x80000000), the 32nd is bit 0 (0x00000001).
     return bool(word & (1 << (31 - m % 32)))
+
+
+def flag_state(locations, slot_data: bytes) -> dict[str, bool | None]:
+    """{name: picked_up} for each location; None if its flag isn't mapped yet."""
+    return {
+        loc.name: None if loc.event_flag_id is None else read_flag(slot_data, loc.event_flag_id)
+        for loc in locations
+    }
