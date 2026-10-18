@@ -15,9 +15,9 @@ GOURD_SEEDS: list[GourdLocation] = [
     GourdLocation("Battlefield Memorial Mob Vendor", "Ashina Outskirts", event_flag_id=None, notes="#3"),
     GourdLocation("Upper Tower Antechamber Chest", "Ashina Castle", event_flag_id=None, notes="#4"),
     GourdLocation("Fujioka the Info Broker", "Temple", event_flag_id=None, notes="#5"),
-    GourdLocation("Praying Priests Feet", "Senpou Temple", event_flag_id=None, notes="#6"),
+    GourdLocation("Praying Monks Feet", "Senpou Temple", event_flag_id=None, notes="#6"),
     GourdLocation("Gun Fort Hut", "Sunken Valley", event_flag_id=None, notes="#7"),
-    GourdLocation("Canopy Tree", "Mibu Village", event_flag_id=None, notes="#8"),
+    GourdLocation("Mibu VillageCanopy Tree", "Mibu Village", event_flag_id=None, notes="#8"),
     GourdLocation("Palace Grounds Large Chest", "Fountainhead Palace", event_flag_id=None, notes="#9"),
 ]
 

@@ -49,11 +49,11 @@ BeadLocation("Lone Shadow Masanaga the Spear Bearer", "Ashina Castle (Dusk)", ev
 BeadLocation("Lone Shadow Vilehand - Upper Dojo", "Ashina Castle (Dusk)", event_flag_id = 6779, notes="#32"),
 BeadLocation("Lone Shadow Masanaga - Past", "Hirata Estate (Owls Memory)", event_flag_id = 6781, notes="#33"),
 BeadLocation("Juzou the Drunkard - Past", "Hirata Estate (Owls Memory)", event_flag_id = 6782, notes="#34"),
-BeadLocation("Sakura Bull of the Palace", "Fountainhead Palace", event_flag_id = None, notes="#35"),
-BeadLocation("Okami Leader Shizu", "Fountainhead Palace", event_flag_id = None, notes="#36"),
-BeadLocation("Red-Eyes Ashina Elite", "Ashina Castle (Night)", event_flag_id = None, notes="#38"),
-BeadLocation("Shigekichi of the Red Guard - Drunkard", "Ashina Castle  (Night)", event_flag_id = None, notes="#39"),
-BeadLocation("Seven Ashina Spears - Ashina Reservoir", "Ashina Castle (Night)", event_flag_id = None, notes="#40"),
+BeadLocation("Sakura Bull of the Palace", "Fountainhead Palace", event_flag_id = 6783, notes="#35"),
+BeadLocation("Okami Leader Shizu", "Fountainhead Palace", event_flag_id = 6784, notes="#36"),
+BeadLocation("Red-Eyes Ashina Elite", "Ashina Castle (Night)", event_flag_id = 6785, notes="#38"),
+BeadLocation("Shigekichi of the Red Guard - Drunkard", "Ashina Castle  (Night)", event_flag_id = 6787, notes="#39"),
+BeadLocation("Seven Ashina Spears - Ashina Reservoir", "Ashina Castle (Night)", event_flag_id = 6786, notes="#40"),
     
 #--------------------------
 # Treasure / Floor Pickups
@@ -68,7 +68,7 @@ BeadLocation("Pond Cave - Buddha Statue", "Senpou Temple", event_flag_id = 6791,
 BeadLocation("Poison Lake - Buddha Head", "Ashina Depths", event_flag_id = 6794, notes="#21"),
 BeadLocation("Head Priests Temple - Hidden Attic Shrine", "Ashina Depths", event_flag_id = 6795, notes="#28"),
 BeadLocation("Mibu Village River Chest", "Ashina Depths", event_flag_id = 6796, notes="#29"),
-BeadLocation("Underwater Chest - Carp Skeleton", "Fountainhead Palace", event_flag_id = None, notes="#37"),
+BeadLocation("Underwater Chest - Carp Skeleton", "Fountainhead Palace", event_flag_id = 6797, notes="#37"),
 
 #--------------------------
 # Shop Purchases
