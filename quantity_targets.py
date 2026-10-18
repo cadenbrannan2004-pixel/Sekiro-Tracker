@@ -9,6 +9,8 @@ reuses the same confirmed inventory offsets as prosthetic_map.py.
 
 from dataclasses import dataclass
 
+from inventory_reader import get_good_quantity
+
 
 @dataclass
 class QuantityTarget:
@@ -31,8 +33,6 @@ QUANTITY_TARGETS: list[QuantityTarget] = [
 
 
 def get_quantity_state(slot_data: bytes) -> dict[str, dict]:
-    from inventory_reader import get_good_quantity
-
     result = {}
     for item in QUANTITY_TARGETS:
         have = get_good_quantity(slot_data, item.item_id)

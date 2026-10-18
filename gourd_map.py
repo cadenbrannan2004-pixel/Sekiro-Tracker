@@ -6,6 +6,7 @@ Gourd Seed pickup locations
 """
 
 from bead_map import BeadLocation as GourdLocation
+from event_flags import flag_state
 
 
 GOURD_SEEDS: list[GourdLocation] = [
@@ -22,12 +23,4 @@ GOURD_SEEDS: list[GourdLocation] = [
 
 
 def get_gourd_state(slot_data: bytes) -> dict[str, bool | None]:
-    """Return {seed_name: picked_up_bool} for every gourd seed (None if the flag isn't mapped yet)."""
-
-    # local import to avoid unused-arg lint noise
-    from event_flags import read_flag
-
-    return {
-        seed.name: None if seed.event_flag_id is None else read_flag(slot_data, seed.event_flag_id)
-        for seed in GOURD_SEEDS
-    }
+    return flag_state(GOURD_SEEDS, slot_data)

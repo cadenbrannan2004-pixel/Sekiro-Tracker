@@ -62,9 +62,8 @@ def parse_region(slot_data: bytes, start: int, length: int) -> list[InventoryRec
 
 
 def parse_inventory(slot_data: bytes) -> list[InventoryRecord]:
-    """Carried inventory only. Kept for backwards compatibility -- prefer
-    parse_all_goods_regions() when checking whether an item is owned
-    anywhere, since goods can also sit in storage or key items."""
+    """Carried inventory only. Use parse_all_goods_regions() for goods,
+    which can also sit in storage or key items."""
     return parse_region(slot_data, INVENTORY_START, INVENTORY_LENGTH)
 
 
@@ -78,13 +77,12 @@ def parse_all_goods_regions(slot_data: bytes) -> list[InventoryRecord]:
     )
 
 
-def get_good_quantity(slot_data: bytes, item_id: int, include_storage: bool = True) -> int:
+def get_good_quantity(slot_data: bytes, item_id: int) -> int:
     """Total quantity owned of a stackable good (e.g. Lapis Lazuli, id 6400),
-    summed across carried inventory + storage + key items by default, since
+    summed across carried inventory + storage + key items, since
     a player may have banked some in storage."""
-    records = parse_all_goods_regions(slot_data) if include_storage else parse_inventory(slot_data)
     total = 0
-    for record in records:
+    for record in parse_all_goods_regions(slot_data):
         if record.type_bits == ITEM_TYPE_GOOD and record.clean_item_id == item_id:
             total += record.quantity
     return total
@@ -96,12 +94,5 @@ def owns_weapon(slot_data: bytes, item_id: int) -> bool:
     so the main inventory block alone is sufficient here."""
     for record in parse_inventory(slot_data):
         if record.type_bits == ITEM_TYPE_WEAPON and record.clean_item_id == item_id:
-            return True
-    return False
-
-
-def owns_armor(slot_data: bytes, item_id: int) -> bool:
-    for record in parse_inventory(slot_data):
-        if record.type_bits == ITEM_TYPE_ARMOR and record.clean_item_id == item_id:
             return True
     return False
