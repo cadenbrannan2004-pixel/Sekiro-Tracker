@@ -15,17 +15,18 @@ class QuantityTarget:
     name: str
     item_id: int
     target: int  # how many you actually need for the relevant achievement/purchase
+    checkbox: bool = False  # one-per-save items: show held/not-held instead of a bar
 
 
 QUANTITY_TARGETS: list[QuantityTarget] = [
     # set targets to whatever   
     QuantityTarget("Lapis Lazuli", 6400, target = 10),  
     QuantityTarget("Treasure Carp Scale", 10000, target = 42),  
-    QuantityTarget("Shinobi Esoteric Text", 2920, target = 1), 
-    QuantityTarget("Prosthetic Esoteric Text", 2921, target = 1),
-    QuantityTarget("Ashina Esoteric Text", 2922, target = 1),
-    QuantityTarget("Senpou Esoteric Text", 2923, target = 1), 
-    QuantityTarget("Mushin Esoteric Text", 2924, target = 1),
+    QuantityTarget("Shinobi Esoteric Text", 2920, target = 1, checkbox=True), 
+    QuantityTarget("Prosthetic Esoteric Text", 2921, target = 1, checkbox=True),
+    QuantityTarget("Ashina Esoteric Text", 2922, target = 1, checkbox=True),
+    QuantityTarget("Senpou Esoteric Text", 2923, target = 1, checkbox=True), 
+    QuantityTarget("Mushin Esoteric Text", 2924, target = 1, checkbox=True),
 ]
 
 
@@ -39,5 +40,6 @@ def get_quantity_state(slot_data: bytes) -> dict[str, dict]:
             "have": have,
             "target": item.target,
             "complete": have >= item.target,
+            "checkbox": item.checkbox,
         }
     return result

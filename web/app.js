@@ -38,6 +38,12 @@ function renderQuantities(listEl, quantities) {
   for (const [name, info] of Object.entries(quantities)) {
     const pct = info.target > 0 ? Math.min(100, (info.have / info.target) * 100) : 0;
     const li = document.createElement("li");
+    if (info.checkbox) {
+      const mark = markFor(info.complete);
+      li.innerHTML = `<div class="bar-label"><span>${name}</span><span class="mark ${mark.cls}">${mark.glyph}</span></div>`;
+      listEl.appendChild(li);
+      continue;
+    }
     li.innerHTML = `
       <div class="bar-label"><span>${name}</span><span>${info.have} / ${info.target}</span></div>
       <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
@@ -96,6 +102,11 @@ function renderAll() {
     document.getElementById("beads-list"),
     document.getElementById("beads-count"),
     Object.entries(report.prayer_beads)
+  );
+  renderChecklist(
+    document.getElementById("gourds-list"),
+    document.getElementById("gourds-count"),
+    Object.entries(report.gourd_seeds)
   );
   renderTools(
     document.getElementById("tools-list"),
