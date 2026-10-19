@@ -53,6 +53,6 @@ def find_active_slots(full_save_data: bytes) -> list[int]:
     active = []
     for i in range(NUM_SLOTS):
         slot = extract_slot(full_save_data, i)
-        if any(b != 0 for b in slot[:0x1000]):
+        if any(slot[:0x1000]):
             active.append(i)
     return active

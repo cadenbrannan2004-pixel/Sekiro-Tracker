@@ -9,6 +9,8 @@ Sculptor). IDs confirmed from alfizari's weapons.json.
 
 from dataclasses import dataclass
 
+from inventory_reader import owns_weapon
+
 
 @dataclass
 class ProstheticTool:
@@ -30,11 +32,4 @@ PROSTHETIC_TOOLS: list[ProstheticTool] = [
 
 
 def get_prosthetic_state(slot_data: bytes) -> dict[str, bool]:
-    from inventory_reader import owns_weapon
-
     return {tool.name: owns_weapon(slot_data, tool.item_id) for tool in PROSTHETIC_TOOLS}
-
-
-def missing_prosthetics(slot_data: bytes) -> list[str]:
-    state = get_prosthetic_state(slot_data)
-    return [name for name, owned in state.items() if not owned]
