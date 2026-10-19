@@ -17,7 +17,7 @@ GOURD_SEEDS: list[GourdLocation] = [
     GourdLocation("Praying Priests Feet", "Senpou Temple", event_flag_id=None, notes="#6"),
     GourdLocation("Gun Fort Hut", "Sunken Valley", event_flag_id=None, notes="#7"),
     GourdLocation("Canopy Tree", "Mibu Village", event_flag_id=None, notes="#8"),
-    GourdLocation("Palace Grounds Large Chest", "Fountainhead Palace", event_flag_id=None, notes="#9"),
+    GourdLocation("Palace Grounds Large Chest", "Fountainhead Palace", event_flag_id=6729, notes="#9"),
 ]
 
 
