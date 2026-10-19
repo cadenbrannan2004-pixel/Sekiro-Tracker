@@ -1,5 +1,8 @@
 
 
+WARNING: Outdated readme for the most part, take what is here as a mock up readme rather than a fully finished one 
+
+
 # Sekiro Achievement Tracker
 
 A Python tool that reads Sekiro: Shadows Die Twice's save file directly and automatically tracks progress toward 100% completion(prayer beads, prosthetic tools, boss memories, and key resources).
