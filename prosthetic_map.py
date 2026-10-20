@@ -26,8 +26,10 @@ PROSTHETIC_TOOLS: list[ProstheticTool] = [
     ProstheticTool("Mist Raven", 74000),
     ProstheticTool("Sabimaru", 75000),
     ProstheticTool("Loaded Umbrella", 76000),
+    ProstheticTool("Divine Abduction", 77000),
     ProstheticTool("Loaded Spear", 78000),
     ProstheticTool("Finger Whistle", 79000),
+    
 ]
 
 

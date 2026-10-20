@@ -31,9 +31,15 @@ def read_flag(slot_data: bytes, flag_id: int) -> bool | None:
     return bool(word & (1 << (31 - m % 32)))
 
 
-def flag_state(locations, slot_data: bytes) -> dict[str, bool | None]:
-    """{name: picked_up} for each location; None if its flag isn't mapped yet."""
-    return {
-        loc.name: None if loc.event_flag_id is None else read_flag(slot_data, loc.event_flag_id)
+def flag_state(locations, slot_data: bytes) -> list[dict]:
+    """One row per location, in list order; collected is None if its flag isn't mapped yet."""
+    return [
+        {
+            "name": loc.name,
+            "region": loc.region,
+            "source": loc.source,
+            "video": loc.video,
+            "collected": None if loc.event_flag_id is None else read_flag(slot_data, loc.event_flag_id),
+        }
         for loc in locations
-    }
+    ]

@@ -7,6 +7,7 @@ Runs the save watcher (tracker.py) and the web dashboard (server.py) in one proc
 
 import sys
 import threading
+import time
 import webbrowser
 from pathlib import Path
 
@@ -32,6 +33,34 @@ def watch():
         print(exc)
 
 
+# Closing the tab sends /api/bye. A reload sends it too, so wait a few seconds
+# for the page to come back before shutting down.
+BYE_GRACE_SECONDS = 5
+last_request = time.monotonic()
+said_bye = False
+
+
+@server.app.before_request
+def note_request():
+    global last_request, said_bye
+    last_request = time.monotonic()
+    said_bye = False
+
+
+@server.app.post("/api/bye")
+def bye():
+    global said_bye
+    said_bye = True
+    return "", 204
+
+
+def close_when_tab_closes(httpd):
+    while not (said_bye and time.monotonic() - last_request > BYE_GRACE_SECONDS):
+        time.sleep(1)
+    print("Dashboard tab closed, shutting down.")
+    httpd.shutdown()
+
+
 def main():
     threading.Thread(target=watch, daemon=True).start()
 
@@ -40,6 +69,7 @@ def main():
     url = f"http://127.0.0.1:{httpd.server_port}"
     print(f"Dashboard: {url}  (Ctrl+C to quit)")
     webbrowser.open(url)
+    threading.Thread(target=close_when_tab_closes, args=(httpd,), daemon=True).start()
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:

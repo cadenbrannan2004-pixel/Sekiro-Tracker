@@ -1,9 +1,7 @@
 """
 test_connection.py
 
-Run this ONCE, manually, to confirm the whole pipeline actually works
-against your real save before trusting tracker.py's automatic loop. This will
-allow you to check if your stats appear correct in the terminal before that loop runs.
+Run this ONCE, manually, to confirm the tracker can read your save file and parse some basic stats.
 
     uv run test_connection.py
 
@@ -54,7 +52,7 @@ def main():
         for name, info in report["quantity_targets"].items():
             print(f"  {name}: {info['have']} / {info['target']}")
 
-        beads_mapped = sum(1 for v in report["prayer_beads"].values() if v is not None)
+        beads_mapped = sum(1 for b in report["prayer_beads"] if b["collected"] is not None)
         print(f"\nPrayer beads mapped so far: {beads_mapped} "
               f"(rest show null -- expected, not an error)")
         print()

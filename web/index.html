@@ -2,44 +2,111 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Sekiro Tracker</title>
+  <script>
+    // Apply the saved theme before first paint so the page never flashes the wrong one
+    try { const t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+  </script>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1>Sekiro Tracker</h1>
-    <span id="status" class="status">connecting...</span>
-    <nav id="slot-tabs" class="tabs"></nav>
-  </header>
+  <!-- Optional: drop background.gif (e.g. flowing petals) into the web folder -->
+  <div id="backdrop" class="backdrop" aria-hidden="true"></div>
 
-  <nav id="slot-tabs" class="tabs" aria-label="Save slots"></nav>
+  <div class="page">
+    <header>
+      <div class="title-block">
+        <h1>Sekiro Tracker</h1>
+        <p class="subtitle">Prayer beads, gourd seeds, prosthetics, materials and endings, read live from your save.</p>
+        <span id="status" class="status">Connecting…</span>
+      </div>
+      <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Switch to dark theme">
+        <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+      <!-- Optional: drop banner.png into the web folder -->
+      <img class="banner-art" src="cherryblossombanner.png" alt="" onerror="this.remove()">
+    </header>
 
-  <main>
-    <section class="card">
-      <h2>Prayer Beads <span id="beads-count" class="count"></span></h2>
-      <ul id="beads-list" class="checklist"></ul>
+    <nav id="slot-tabs" class="tabs" aria-label="Save slots"></nav>
+
+    <section class="summary" aria-label="Totals">
+      <div class="stat">
+        <span class="stat-label">Prayer Beads</span>
+        <span id="beads-total" class="stat-value">–</span>
+        <div class="bar-track"><div id="beads-bar" class="bar-fill"></div></div>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Gourd Seeds</span>
+        <span id="gourds-total" class="stat-value">–</span>
+        <div class="bar-track"><div id="gourds-bar" class="bar-fill"></div></div>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Prosthetic Tools</span>
+        <span id="tools-total" class="stat-value">–</span>
+        <div class="bar-track"><div id="tools-bar" class="bar-fill"></div></div>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Endings</span>
+        <span id="endings-total" class="stat-value">–</span>
+        <div class="bar-track"><div id="endings-bar" class="bar-fill"></div></div>
+      </div>
     </section>
 
-    <section class="card">
-      <h2>Gourd Seeds <span id="gourds-count" class="count"></span></h2>
-      <ul id="gourds-list" class="checklist"></ul>
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Prayer Beads</h2>
+        <ul class="legend" aria-label="Legend">
+          <li><span class="mark yes"></span>Collected</li>
+          <li><span class="mark no"></span>Not yet</li>
+          <li><span class="mark unknown"></span>Flag not mapped</li>
+          <li><span class="swatch-new"></span>New this session</li>
+        </ul>
+      </div>
+      <div id="beads-regions" class="regions"></div>
     </section>
 
-    <section class="card">
-      <h2>Prosthetic Tools <span id="tools-count" class="count"></span></h2>
-      <ul id="tools-list" class="checklist"></ul>
-    </section>
+    <div class="lower">
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Gourd Seeds</h2>
+          <span id="gourds-count" class="count"></span>
+        </div>
+        <ul id="gourds-list" class="checklist"></ul>
+      </section>
 
-    <section class="card">
-      <h2>Quantity Targets</h2>
-      <ul id="quantities-list" class="bars"></ul>
-    </section>
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Prosthetic Tools</h2>
+          <span id="tools-count" class="count"></span>
+        </div>
+        <p class="panel-note">Tools are tracked once they're fitted to the Shinobi Prosthetic, not when first picked up.</p>
+        <ul id="tools-list" class="checklist"></ul>
+      </section>
 
-    <section class="card wide">
-      <h2>Endings <span class="hint">(manual checklist)</span></h2>
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Materials &amp; Texts</h2>
+        </div>
+        <ul id="texts-list" class="checklist"></ul>
+        <ul id="quantities-list" class="bars"></ul>
+      </section>
+    </div>
+
+    <section class="endings-section">
+      <div class="section-head">
+        <h2>Endings</h2>
+        <span class="hint">Manual checklist · tick each step yourself</span>
+      </div>
       <div id="endings" class="endings"></div>
     </section>
-  </main>
+
+    <footer>
+      <span>Read-only: this tool never writes to your save file.</span>
+      <span>Fan-made tool · not affiliated with FromSoftware or Activision</span>
+    </footer>
+  </div>
 
   <script src="app.js"></script>
 </body>
