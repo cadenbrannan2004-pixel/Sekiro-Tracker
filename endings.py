@@ -20,11 +20,8 @@ class Ending:
     id: str
     name: str
     requirements: list[EndingRequirement]
-    video: str = ""  # YouTube guide for the whole ending, e.g. video="https://youtu.be/VIDEO_ID?t=754"
+    video: str = ""  # YouTube guide for the endings
 
-# To add a video: YouTube > Share > tick "Start at" > copy, then paste it into video="" after the ending's list.
-# The requirements are just a reminder of progress; the video is the walkthrough.
-# The endings have unique IDs for each requirement, which is used in the web app to track completion.
 
 ENDINGS: list[Ending] = [
     Ending("return", "Return Ending (Dragon's Homecoming)", [

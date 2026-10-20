@@ -165,9 +165,17 @@ function renderRegions(container, beads) {
   return done;
 }
 
-function renderQuantities(listEl, quantities) {
+// Checkbox targets (the esoteric texts) render as collected/not-yet rows;
+// counted ones (Lapis Lazuli, Treasure Carp Scale) keep progress bars below them
+function renderQuantities(textsEl, listEl, quantities) {
+  const entries = Object.entries(quantities);
+  const textRows = entries
+    .filter(([, info]) => info.checkbox)
+    .map(([name, info]) => ({ name, collected: info.complete }));
+  renderChecklist(textsEl, textRows);
+
   listEl.innerHTML = "";
-  for (const [name, info] of Object.entries(quantities)) {
+  for (const [name, info] of entries.filter(([, info]) => !info.checkbox)) {
     const pct = info.target > 0 ? Math.min(100, (info.have / info.target) * 100) : 0;
     const li = document.createElement("li");
     li.innerHTML = `
@@ -237,7 +245,8 @@ function renderAll() {
   document.getElementById("tools-count").textContent = countText(tools, toolRows);
   renderTotal("tools", tools, toolRows.length);
 
-  renderQuantities(document.getElementById("quantities-list"), report.quantity_targets);
+  renderQuantities(document.getElementById("texts-list"), document.getElementById("quantities-list"),
+                   report.quantity_targets);
 }
 
 function agoText(seconds) {

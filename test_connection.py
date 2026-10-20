@@ -1,9 +1,7 @@
 """
 test_connection.py
 
-Run this ONCE, manually, to confirm the whole pipeline actually works
-against your real save before trusting tracker.py's automatic loop. This will
-allow you to check if your stats appear correct in the terminal before that loop runs.
+Run this ONCE, manually, to confirm the tracker can read your save file and parse some basic stats.
 
     uv run test_connection.py
 
