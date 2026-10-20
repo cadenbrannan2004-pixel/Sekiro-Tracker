@@ -14,3 +14,6 @@ ending_state.json
 build/
 dist/
 *.spec
+# Impeccable
+.impeccable/
+DESIGN.md

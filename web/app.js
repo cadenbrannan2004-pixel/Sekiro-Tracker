@@ -10,6 +10,56 @@ const REGION_ORDER = [
 
 const statusEl = document.getElementById("status");
 
+const PLAY_ICON = `<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1.8v8.4L10 6z"/></svg>`;
+
+// Theme: follows the system until the toggle pins one (saved in localStorage)
+const themeBtn = document.getElementById("theme-toggle");
+const darkQuery = matchMedia("(prefers-color-scheme: dark)");
+
+function isDark() {
+  const pinned = document.documentElement.dataset.theme;
+  return pinned ? pinned === "dark" : darkQuery.matches;
+}
+
+function syncThemeButton() {
+  const dark = isDark();
+  document.documentElement.classList.toggle("dark", dark);
+  themeBtn.setAttribute("aria-label", dark ? "Switch to light theme" : "Switch to dark theme");
+}
+
+themeBtn.addEventListener("click", () => {
+  const next = isDark() ? "light" : "dark";
+  document.documentElement.dataset.theme = next;
+  try { localStorage.setItem("theme", next); } catch (e) { /* storage unavailable */ }
+  syncThemeButton();
+});
+darkQuery.addEventListener("change", syncThemeButton);
+syncThemeButton();
+
+// Backdrop: the user's background.gif if present, otherwise a few drawn petals
+const PETAL_COUNT = 10;
+const backdrop = document.getElementById("backdrop");
+const bgImage = new Image();
+bgImage.onload = () => {
+  backdrop.style.backgroundImage = "url(background.gif)";
+  backdrop.classList.add("has-gif");
+};
+bgImage.onerror = () => {
+  for (let i = 0; i < PETAL_COUNT; i++) {
+    const petal = document.createElement("span");
+    petal.className = "petal";
+    // Alternate between the left and right gutters so petals aren't hidden behind the panels
+    petal.style.left = `${i % 2 ? 88 + Math.random() * 10 : Math.random() * 10}%`;
+    petal.style.setProperty("--size", `${14 + Math.random() * 6}px`);
+    petal.style.setProperty("--y", `${10 + Math.random() * 80}%`);       // resting spot under reduced motion
+    petal.style.setProperty("--r", `${Math.random() * 360}deg`);
+    petal.style.animationDuration = `${16 + Math.random() * 12}s`;
+    petal.style.animationDelay = `${-Math.random() * 28}s`;  // negative = already mid-fall on load
+    backdrop.appendChild(petal);
+  }
+};
+bgImage.src = "background.gif";
+
 function setStatus(text, cls) {
   statusEl.textContent = text;
   statusEl.className = `status ${cls || ""}`;
@@ -32,14 +82,29 @@ const MARK_LABELS = { yes: "Collected", no: "Not yet", unknown: "Flag not mapped
 // keepSpace leaves an invisible slot so rows without a video still line up.
 function videoLink(url, keepSpace) {
   if (!url || !url.startsWith("https://")) {
-    return keepSpace ? `<span class="video placeholder" aria-hidden="true">▶</span>` : "";
+    return keepSpace ? `<span class="video placeholder" aria-hidden="true"></span>` : "";
   }
-  return `<a class="video" href="${esc(url)}" target="_blank" rel="noopener" title="Watch on YouTube">▶</a>`;
+  return `<a class="video" href="${esc(url)}" target="_blank" rel="noopener" title="Watch on YouTube" aria-label="Watch on YouTube">${PLAY_ICON}</a>`;
+}
+
+// Per slot: keys of items already collected when that slot was first shown.
+// Anything collected later counts as new until the row is hovered or focused.
+const seenBySlot = {};
+let seen = null;
+let firstLook = false;
+
+function markNew(li, key) {
+  if (firstLook) { seen.add(key); return; }
+  if (seen.has(key)) return;
+  li.classList.add("new");
+  const clear = () => { seen.add(key); li.classList.replace("new", "just-seen"); };
+  li.addEventListener("pointerenter", clear, { once: true });
+  li.addEventListener("focusin", clear, { once: true });
 }
 
 // rows: [{name, collected, region?, source?, video?}] -- collected null = flag not mapped yet
 // tag: "source" shows BOSS/CHEST/..., "region" shows the area name on the right
-function renderChecklist(listEl, rows, { tag, videos } = {}) {
+function renderChecklist(listEl, rows, { tag, videos, group = listEl.id } = {}) {
   listEl.innerHTML = "";
   for (const row of rows) {
     const li = document.createElement("li");
@@ -52,18 +117,24 @@ function renderChecklist(listEl, rows, { tag, videos } = {}) {
                     `<span class="item-name">${esc(row.name || "(unnamed)")}</span>` +
                     tagHtml +
                     (videos ? videoLink(row.video, true) : "");
+    if (row.collected === true) markNew(li, `${group}:${row.name}`);
     listEl.appendChild(li);
   }
   return rows.filter((r) => r.collected === true).length;
 }
 
+// Leads with what's left, since that's what the player is hunting for
 function countText(done, rows) {
+  const left = rows.length - done;
+  if (left === 0) return "Complete";
   const unmapped = rows.filter((r) => r.collected === null).length;
-  return `${done} / ${rows.length}` + (unmapped ? ` · ${unmapped} unmapped` : "");
+  return `${left} left` + (unmapped ? ` · ${unmapped} unmapped` : "");
 }
 
 function renderTotal(id, done, total) {
-  document.getElementById(`${id}-total`).innerHTML = `${done}<small> / ${total}</small>`;
+  const left = total - done;
+  document.getElementById(`${id}-total`).innerHTML = `${done}<small> / ${total}</small>` +
+    ` <span class="stat-left">${left ? `${left} left` : "Complete"}</span>`;
   document.getElementById(`${id}-bar`).style.width = `${total ? (done / total) * 100 : 0}%`;
 }
 
@@ -86,7 +157,7 @@ function renderRegions(container, beads) {
     const block = document.createElement("div");
     block.className = "region";
     block.innerHTML = `<h3><span>${esc(region)}</span><span class="count"></span></h3><ul class="checklist"></ul>`;
-    const regionDone = renderChecklist(block.querySelector("ul"), rows, { tag: "source", videos: true });
+    const regionDone = renderChecklist(block.querySelector("ul"), rows, { tag: "source", videos: true, group: `beads:${region}` });
     block.querySelector(".count").textContent = countText(regionDone, rows);
     done += regionDone;
     container.appendChild(block);
@@ -147,6 +218,9 @@ function renderAll() {
   }
   if (!(selectedSlot in slots)) selectedSlot = ids[0];  // saved choice vanished -> fall back
   renderTabs(slots);
+
+  firstLook = !(selectedSlot in seenBySlot);
+  seen = seenBySlot[selectedSlot] ??= new Set();
 
   const report = slots[selectedSlot].report;
 
@@ -226,7 +300,7 @@ async function loadEndings() {
       ? `<span class="count done">Complete</span>`
       : `<span class="count">${doneCount} / ${ending.requirements.length}</span>`;
     const guide = ending.video && ending.video.startsWith("https://")
-      ? `<a class="guide" href="${esc(ending.video)}" target="_blank" rel="noopener">Watch the ending guide</a>`
+      ? `<a class="guide" href="${esc(ending.video)}" target="_blank" rel="noopener">${PLAY_ICON}Watch the ending guide</a>`
       : "";
     block.innerHTML = `<h3><span>${esc(ending.name)}</span>${progress}</h3>${guide}`;
 
