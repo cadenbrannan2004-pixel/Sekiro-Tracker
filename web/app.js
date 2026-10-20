@@ -236,7 +236,7 @@ function renderAll() {
   renderTotal("beads", beads, report.prayer_beads.length);
 
   const gourdRows = report.gourd_seeds;
-  const gourds = renderChecklist(document.getElementById("gourds-list"), gourdRows, { tag: "region" });
+  const gourds = renderChecklist(document.getElementById("gourds-list"), gourdRows, { tag: "region", videos: true });
   document.getElementById("gourds-count").textContent = countText(gourds, gourdRows);
   renderTotal("gourds", gourds, gourdRows.length);
 

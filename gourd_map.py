@@ -15,23 +15,23 @@ GOURD_SEEDS: list[GourdLocation] = [
     # --------------------------
     # Pickups / Chests
     # --------------------------
-    GourdLocation("Outskirts Stairway Idol", "Ashina Outskirts", PICKUP, 6725, video=""),
-    GourdLocation("Upper Tower Antechamber Chest", "Ashina Castle", CHEST, video=""),
-    GourdLocation("Praying Monks Feet", "Senpou Temple", PICKUP, video=""),
-    GourdLocation("Gun Fort Hut", "Sunken Valley", PICKUP, video=""),
-    GourdLocation("Canopy Tree", "Mibu Village", PICKUP, video=""),
-    GourdLocation("Palace Grounds Large Chest", "Fountainhead Palace", CHEST, 6729, video=""),
+    GourdLocation("Outskirts Stairway Idol", "Ashina Outskirts", PICKUP, 6725, video="https://youtu.be/UNumOeKDNDM?si=NaH5eR2Afyskl3Rb&t=21"),
+    GourdLocation("Upper Tower Antechamber Chest", "Ashina Castle", CHEST, video="https://youtu.be/UNumOeKDNDM?si=ZZPmXMUOCwaKN3EU&t=68"),
+    GourdLocation("Praying Monks Feet", "Senpou Temple", PICKUP, video="https://youtu.be/UNumOeKDNDM?si=pWrsZLYX4W3XEH1F&t=75"),
+    GourdLocation("Gun Fort Hut", "Sunken Valley", PICKUP, video="https://youtu.be/UNumOeKDNDM?si=lmUoxhqZwINerzZ6&t=86"),
+    GourdLocation("Canopy Tree", "Mibu Village", PICKUP, video="https://youtu.be/UNumOeKDNDM?si=Mu9TzvTuSjfyWgPz&t=104"),
+    GourdLocation("Palace Grounds Large Chest", "Fountainhead Palace", CHEST, 6729, video="https://youtu.be/UNumOeKDNDM?si=MzHsEnfjKnK7AAEn&t=117"),
 
     # --------------------------
     # Boss Drops
     # --------------------------
-    GourdLocation("Naomori Kawarada Seed Drop", "Ashina Outskirts - Gate Path", BOSS, 6760, video=""),
+    GourdLocation("Naomori Kawarada Seed Drop", "Ashina Outskirts - Gate Path", BOSS, 6760, video="https://youtu.be/UNumOeKDNDM?si=TcIq1W1ikQzBGjPX&t=8"),
 
     # --------------------------
     # Vendors
     # --------------------------
-    GourdLocation("Battlefield Memorial Mob Vendor", "Ashina Outskirts", SHOP, video=""),
-    GourdLocation("Fujioka the Info Broker", "Temple", SHOP, 6722, video=""),
+    GourdLocation("Battlefield Memorial Mob Vendor", "Ashina Outskirts", SHOP, video="https://youtu.be/UNumOeKDNDM?si=bupOvMhfQr-1XZUj&t=32"),
+    GourdLocation("Fujioka the Info Broker", "Temple", SHOP, 6722, video="https://youtu.be/UNumOeKDNDM?si=2XZGDdzfJQ-SZgUJ&t=44"),
 ]
 # fmt: on
 
