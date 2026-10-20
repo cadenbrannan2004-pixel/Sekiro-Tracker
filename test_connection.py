@@ -54,7 +54,7 @@ def main():
         for name, info in report["quantity_targets"].items():
             print(f"  {name}: {info['have']} / {info['target']}")
 
-        beads_mapped = sum(1 for v in report["prayer_beads"].values() if v is not None)
+        beads_mapped = sum(1 for b in report["prayer_beads"] if b["collected"] is not None)
         print(f"\nPrayer beads mapped so far: {beads_mapped} "
               f"(rest show null -- expected, not an error)")
         print()

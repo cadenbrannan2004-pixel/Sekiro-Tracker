@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Sekiro Tracker</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -9,10 +10,22 @@
   <header>
     <h1>Sekiro Tracker</h1>
     <span id="status" class="status">connecting...</span>
-    <nav id="slot-tabs" class="tabs"></nav>
   </header>
 
   <nav id="slot-tabs" class="tabs" aria-label="Save slots"></nav>
+
+  <section class="summary" aria-label="Totals">
+    <div class="stat">
+      <span class="stat-label">Prayer Beads</span>
+      <span id="beads-total" class="stat-value">–</span>
+      <div class="bar-track"><div id="beads-bar" class="bar-fill"></div></div>
+    </div>
+    <div class="stat">
+      <span class="stat-label">Gourd Seeds</span>
+      <span id="gourds-total" class="stat-value">–</span>
+      <div class="bar-track"><div id="gourds-bar" class="bar-fill"></div></div>
+    </div>
+  </section>
 
   <main>
     <section class="card">

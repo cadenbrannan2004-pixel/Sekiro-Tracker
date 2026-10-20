@@ -1,20 +1,26 @@
 :root {
-  --bg: #14161a;
-  --card: #1e2126;
-  --border: #2c3036;
-  --text: #e6e6e6;
-  --dim: #8a8f98;
-  --accent: #6fae8f;
-  --missing: #d97757;
+  --ink: #0f0e0d;          /* background */
+  --card: #191715;
+  --border: #2d2925;
+  --washi: #ece4d0;        /* text */
+  --dim: #9a9182;
+  --persimmon: #e0643a;    /* accents */
+  --gold: #c2a25e;         /* collected */
+  --sakura: #e9a8b9;       /* missing */
+  --sakura-soft: rgba(233, 168, 185, 0.28);
 }
 
 * { box-sizing: border-box; }
 
 body {
   margin: 0;
-  background: var(--bg);
-  color: var(--text);
+  background: var(--ink);
+  color: var(--washi);
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+h1, h2, h3, .stat-value {
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", Georgia, serif;
 }
 
 header {
@@ -22,23 +28,43 @@ header {
   align-items: baseline;
   gap: 12px;
   padding: 20px 28px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 2px solid var(--persimmon);
 }
 
-h1 { font-size: 20px; margin: 0; }
+h1 { font-size: 22px; margin: 0; color: var(--persimmon); letter-spacing: 0.02em; }
 
-.status {
-  font-size: 13px;
-  color: var(--dim);
+.status { font-size: 13px; color: var(--dim); }
+.status.ok { color: var(--gold); }
+.status.error { color: var(--sakura); }
+
+/* Totals strip */
+.summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  padding: 20px 28px 0;
 }
-.status.ok { color: var(--accent); }
-.status.error { color: var(--missing); }
+
+.stat {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--persimmon);
+  border-radius: 10px;
+  padding: 14px 18px;
+  display: grid;
+  gap: 6px;
+}
+
+.stat-label { font-size: 12px; color: var(--dim); text-transform: uppercase; letter-spacing: 0.08em; }
+.stat-value { font-size: 30px; color: var(--gold); }
+.stat-value small { font-size: 16px; color: var(--dim); }
+.stat .bar-track { height: 8px; }
 
 main {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 16px;
-  padding: 24px 28px;
+  padding: 20px 28px 28px;
 }
 
 .card {
@@ -51,21 +77,23 @@ main {
 .card.wide { grid-column: 1 / -1; }
 
 .card h2 {
-  font-size: 15px;
+  font-size: 16px;
   margin: 0 0 12px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--persimmon);
   display: flex;
   align-items: baseline;
   gap: 8px;
 }
 
-.count { font-size: 12px; color: var(--dim); font-weight: normal; }
-.hint { font-size: 12px; color: var(--dim); font-weight: normal; }
+.count { font-size: 12px; color: var(--dim); font-weight: normal; font-family: system-ui, sans-serif; }
+.hint { font-size: 12px; color: var(--dim); font-weight: normal; font-family: system-ui, sans-serif; }
 
 .checklist {
   list-style: none;
   margin: 0;
   padding: 0;
-  max-height: 340px;
+  max-height: 420px;
   overflow-y: auto;
 }
 
@@ -73,19 +101,41 @@ main {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 4px 0;
+  padding: 5px 0;
   font-size: 13px;
   border-bottom: 1px solid var(--border);
 }
 .checklist li:last-child { border-bottom: none; }
+.checklist li.yes .item-name { color: var(--gold); }
 
 .mark { width: 16px; text-align: center; }
-.mark.yes { color: var(--accent); }
-.mark.no { color: var(--dim); }
-.mark.unknown { color: var(--dim); opacity: .5; }
+.mark.yes { color: var(--gold); }
+.mark.no { color: var(--sakura); }
+.mark.unknown { color: var(--dim); opacity: .6; }
 
-.item-name { flex: 1; }
-.item-region { color: var(--dim); font-size: 12px; }
+.item-name { flex: 1; min-width: 0; }
+.item-region { display: block; color: var(--dim); font-size: 11px; }
+
+.source {
+  flex-shrink: 0;
+  font-size: 11px;
+  padding: 1px 7px;
+  border: 1px solid var(--persimmon);
+  border-radius: 999px;
+  color: var(--persimmon);
+  white-space: nowrap;
+}
+
+.video {
+  flex-shrink: 0;
+  color: var(--persimmon);
+  text-decoration: none;
+  font-size: 12px;
+  line-height: 1;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+.video:hover, .video:focus-visible { background: var(--persimmon); color: var(--ink); }
 
 .bars { list-style: none; margin: 0; padding: 0; }
 .bars li { margin-bottom: 10px; font-size: 13px; }
@@ -95,14 +145,15 @@ main {
   margin-bottom: 3px;
 }
 .bar-track {
-  background: var(--border);
+  background: var(--sakura-soft);
   border-radius: 4px;
   height: 6px;
   overflow: hidden;
 }
 .bar-fill {
-  background: var(--accent);
+  background: var(--gold);
   height: 100%;
+  width: 0;
 }
 
 .endings {
@@ -111,18 +162,16 @@ main {
   gap: 16px;
 }
 
+.ending h3 .count { white-space: nowrap; }
 .ending h3 {
-  font-size: 14px;
+  gap: 8px;
+  font-size: 15px;
   margin: 0 0 8px 0;
   display: flex;
   justify-content: space-between;
 }
 
-.ending ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
+.ending ul { list-style: none; margin: 0; padding: 0; }
 
 .ending li {
   display: flex;
@@ -132,9 +181,24 @@ main {
   padding: 4px 0;
 }
 
+/* Unchecked = sakura outline, checked = gold fill */
 .ending input[type="checkbox"] {
-  margin-top: 2px;
+  appearance: none;
+  flex-shrink: 0;
+  width: 15px;
+  height: 15px;
+  margin: 1px 0 0;
+  border: 1.5px solid var(--sakura);
+  border-radius: 3px;
+  background: transparent;
+  cursor: pointer;
+  display: grid;
+  place-content: center;
 }
+.ending input[type="checkbox"]:checked { background: var(--gold); border-color: var(--gold); }
+.ending input[type="checkbox"]:checked::after { content: "✓"; color: var(--ink); font-size: 11px; line-height: 1; }
+.ending input[type="checkbox"]:focus-visible { outline: 2px solid var(--persimmon); outline-offset: 2px; }
+.ending input:checked + label { color: var(--gold); }
 
 .tabs {
   display: flex;
@@ -153,5 +217,9 @@ main {
   cursor: pointer;
 }
 
-.tab:hover { color: var(--text); }
-.tab.active { color: var(--text); border-color: var(--accent); }
+.tab:hover { color: var(--washi); }
+.tab.active { color: var(--washi); border-color: var(--persimmon); }
+
+@media (max-width: 600px) {
+  header, .tabs, .summary, main { padding-left: 16px; padding-right: 16px; }
+}

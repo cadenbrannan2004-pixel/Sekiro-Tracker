@@ -20,8 +20,10 @@ class Ending:
     id: str
     name: str
     requirements: list[EndingRequirement]
+    video: str = ""  # YouTube guide for the whole ending, e.g. video="https://youtu.be/VIDEO_ID?t=754"
 
-# Still needs URL links to a YT video explaining every ending but will add later
+# To add a video: YouTube > Share > tick "Start at" > copy, then paste it into video="" after the ending's list.
+# The requirements are just a reminder of progress; the video is the walkthrough.
 # The endings have unique IDs for each requirement, which is used in the web app to track completion.
 
 ENDINGS: list[Ending] = [
@@ -37,7 +39,7 @@ ENDINGS: list[Ending] = [
         EndingRequirement("return_divine_dragon", "Defeated the Divine Dragon"),
         EndingRequirement("return_isshin", "Defeated Isshin, the Sword Saint"),
         EndingRequirement("return_choice", "Gave Kuro the Frozen Tears and Divine Dragon Tears"),
-    ]),
+    ], video=""),
     Ending("purification", "Purification Ending", [
         EndingRequirement("purification_genichiro", "Defeated Genichiro, Way of Tomoe (rooftop)"),
         EndingRequirement("purification_key_items", "Collected Lotus of the Palace, Shelter Stone, and Mortal Blade"),
@@ -45,20 +47,20 @@ ENDINGS: list[Ending] = [
         EndingRequirement("purification_owl_father", "Obtained Father's Bell Charm and Defeated Owl (Father)"),
         EndingRequirement("purification_isshin", "Defeated Isshin, the Sword Saint"),
         EndingRequirement("purification_choice", "Gave Kuro Aromatic Flower and Divine Dragon's Tears"),
-    ]),
+    ], video=""),
     Ending("immortal_severance", "Immortal Severance Ending", [
         EndingRequirement("severance_genichiro", "Defeated Genichiro, Way of Tomoe (rooftop)"),
         EndingRequirement("severance_key_items", "Collected Lotus of the Palace, Shelter Stone, and Mortal Blade"),
         EndingRequirement("severance_choice", "Speak to Owl and chose to stay loyal to Kuro"),
         EndingRequirement("severance_isshin", "Defeated Isshin, the Sword Saint"),
         EndingRequirement("severance_final_choice", "Gave Kuro only the Divine Dragon Tears"),
-    ]),
+    ], video=""),
     Ending("shura", "Shura Ending", [
         EndingRequirement("shura_genichiro", "Defeated Genichiro, Way of Tomoe (rooftop)"),
         EndingRequirement("shura_key_items", "Collected Lotus of the Palace and Shelter Stone"),
         EndingRequirement("shura_trigger", "Spoke to Owl and chose the Shura path through the Iron Code"),
         EndingRequirement("shura_final_boss", "Defeated Emma and Isshin Ashina"),
-    ]),
+    ], video=""),
 ]
 
 

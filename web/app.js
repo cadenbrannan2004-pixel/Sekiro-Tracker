@@ -10,27 +10,42 @@ function setStatus(text, cls) {
 function markFor(value) {
   // true = collected/owned, false = not yet, null = flag not mapped yet
   if (value === true) return { cls: "yes", glyph: "✓" };
-  if (value === false) return { cls: "no", glyph: "·" };
+  if (value === false) return { cls: "no", glyph: "○" };
   return { cls: "unknown", glyph: "?" };
 }
 
-function renderChecklist(listEl, countEl, entries) {
-  listEl.innerHTML = "";
-  let done = 0;
-  let mapped = 0;
-  for (const [name, value] of entries) {
-    if (value !== null) mapped += 1;
-    if (value === true) done += 1;
+// Only https links, so a bad paste can't become a javascript: URL
+function videoLink(url) {
+  if (!url || !url.startsWith("https://")) return "";
+  return `<a class="video" href="${url}" target="_blank" rel="noopener" title="Watch on YouTube">▶</a>`;
+}
 
+// rows: [{name, collected, region?, source?}] -- collected null = flag not mapped yet
+function renderChecklist(listEl, countEl, rows) {
+  listEl.innerHTML = "";
+  for (const row of rows) {
     const li = document.createElement("li");
-    const mark = markFor(value);
+    const mark = markFor(row.collected);
+    li.className = mark.cls;
     li.innerHTML = `<span class="mark ${mark.cls}">${mark.glyph}</span>` +
-                    `<span class="item-name">${name || "(unnamed)"}</span>`;
+                    `<span class="item-name">${row.name || "(unnamed)"}` +
+                    (row.region ? `<span class="item-region">${row.region}</span>` : "") +
+                    `</span>` +
+                    (row.source ? `<span class="source">${row.source}</span>` : "") +
+                    videoLink(row.video);
     listEl.appendChild(li);
   }
+  const done = rows.filter((r) => r.collected === true).length;
+  const unmapped = rows.filter((r) => r.collected === null).length;
   if (countEl) {
-    countEl.textContent = mapped > 0 ? `${done} / ${mapped} mapped` : "none mapped yet";
+    countEl.textContent = `${done} / ${rows.length}` + (unmapped ? ` · ${unmapped} unmapped` : "");
   }
+  return done;
+}
+
+function renderTotal(valueEl, barEl, done, total) {
+  valueEl.innerHTML = `${done} <small>/ ${total}</small>`;
+  barEl.style.width = `${total ? (done / total) * 100 : 0}%`;
 }
 
 function renderQuantities(listEl, quantities) {
@@ -50,11 +65,6 @@ function renderQuantities(listEl, quantities) {
     `;
     listEl.appendChild(li);
   }
-}
-
-function renderTools(listEl, countEl, owned) {
-  const entries = Object.entries(owned).map(([name, isOwned]) => [name, isOwned]);
-  renderChecklist(listEl, countEl, entries);
 }
 
 let selectedSlot = null;
@@ -98,20 +108,24 @@ function renderAll() {
   renderTabs(slots);
 
   const report = slots[selectedSlot].report;
-  renderChecklist(
+  const beads = renderChecklist(
     document.getElementById("beads-list"),
     document.getElementById("beads-count"),
-    Object.entries(report.prayer_beads)
+    report.prayer_beads
   );
-  renderChecklist(
+  const gourds = renderChecklist(
     document.getElementById("gourds-list"),
     document.getElementById("gourds-count"),
-    Object.entries(report.gourd_seeds)
+    report.gourd_seeds
   );
-  renderTools(
+  renderTotal(document.getElementById("beads-total"), document.getElementById("beads-bar"),
+              beads, report.prayer_beads.length);
+  renderTotal(document.getElementById("gourds-total"), document.getElementById("gourds-bar"),
+              gourds, report.gourd_seeds.length);
+  renderChecklist(
     document.getElementById("tools-list"),
     document.getElementById("tools-count"),
-    report.prosthetic_tools.owned
+    Object.entries(report.prosthetic_tools.owned).map(([name, collected]) => ({ name, collected }))
   );
   renderQuantities(
     document.getElementById("quantities-list"),
@@ -153,7 +167,7 @@ async function loadEndings() {
     const doneCount = ending.requirements.filter((r) => r.checked).length;
     const block = document.createElement("div");
     block.className = "ending";
-    block.innerHTML = `<h3><span>${ending.name}</span><span class="count">${doneCount} / ${ending.requirements.length}</span></h3>`;
+    block.innerHTML = `<h3><span>${ending.name}${videoLink(ending.video)}</span><span class="count">${doneCount} / ${ending.requirements.length}</span></h3>`;
 
     const ul = document.createElement("ul");
     for (const req of ending.requirements) {
@@ -176,3 +190,6 @@ async function loadEndings() {
 refreshState();
 loadEndings();
 setInterval(refreshState, POLL_INTERVAL_MS);
+
+// Lets SekiroApp.py shut down when this tab closes (404/405 under plain server.py, harmless)
+addEventListener("pagehide", () => navigator.sendBeacon("/api/bye"));

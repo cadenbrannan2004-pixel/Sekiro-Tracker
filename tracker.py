@@ -61,10 +61,10 @@ def run():
 
             for idx, slot in slots.items():
                 r = slot["report"]
-                beads = sum(1 for v in r["prayer_beads"].values() if v)
+                beads = sum(1 for b in r["prayer_beads"] if b["collected"])
                 targets = r["quantity_targets"]
                 complete = sum(1 for t in targets.values() if t["complete"])
-                print(f"Slot {idx}: {beads} prayer beads mapped, "
+                print(f"Slot {idx}: {beads} prayer beads collected, "
                       f"{complete} / {len(targets)} quantity targets complete")
 
         # Sleep every pass, not just when the save changed, so the loop doesn't spin at 100% CPU

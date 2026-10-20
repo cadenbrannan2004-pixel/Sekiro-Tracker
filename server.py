@@ -61,6 +61,7 @@ def api_endings_get():
             {
                 "id": ending.id,
                 "name": ending.name,
+                "video": ending.video,
                 "requirements": [
                     {"id": req.id, "text": req.text, "checked": checked.get(req.id, False)}
                     for req in ending.requirements
