@@ -4,55 +4,98 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Sekiro Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@500;700&display=swap">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1>Sekiro Tracker</h1>
-    <span id="status" class="status">connecting...</span>
-  </header>
+  <div class="page">
+    <header>
+      <div class="title-block">
+        <p class="tagline" lang="ja">死なず 進め</p>
+        <h1>Sekiro Tracker</h1>
+        <p class="subtitle">Prayer beads, gourd seeds, prosthetics, materials and endings, read live from your save.</p>
+      </div>
+      <span id="status" class="status">connecting...</span>
+      <img class="banner-art" src="banner.png" alt="" onerror="this.remove()">
+    </header>
 
-  <nav id="slot-tabs" class="tabs" aria-label="Save slots"></nav>
+    <nav id="slot-tabs" class="tabs" aria-label="Save slots"></nav>
 
-  <section class="summary" aria-label="Totals">
-    <div class="stat">
-      <span class="stat-label">Prayer Beads</span>
-      <span id="beads-total" class="stat-value">–</span>
-      <div class="bar-track"><div id="beads-bar" class="bar-fill"></div></div>
+    <section class="summary" aria-label="Totals">
+      <div class="stat">
+        <div class="stat-head"><span class="stat-label">Prayer Beads</span><span class="kanji" lang="ja">数珠</span></div>
+        <span id="beads-total" class="stat-value">–</span>
+        <div class="bar-track"><div id="beads-bar" class="bar-fill"></div></div>
+      </div>
+      <div class="stat">
+        <div class="stat-head"><span class="stat-label">Gourd Seeds</span><span class="kanji" lang="ja">瓢箪</span></div>
+        <span id="gourds-total" class="stat-value">–</span>
+        <div class="bar-track"><div id="gourds-bar" class="bar-fill"></div></div>
+      </div>
+      <div class="stat">
+        <div class="stat-head"><span class="stat-label">Prosthetic Tools</span><span class="kanji" lang="ja">忍具</span></div>
+        <span id="tools-total" class="stat-value">–</span>
+        <div class="bar-track"><div id="tools-bar" class="bar-fill"></div></div>
+      </div>
+      <div class="stat">
+        <div class="stat-head"><span class="stat-label">Endings</span><span class="kanji" lang="ja">結末</span></div>
+        <span id="endings-total" class="stat-value">–</span>
+        <div class="bar-track"><div id="endings-bar" class="bar-fill"></div></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2><span class="kanji" lang="ja">数珠</span>Prayer Beads</h2>
+        <ul class="legend" aria-label="Legend">
+          <li><span class="mark yes"></span>Collected</li>
+          <li><span class="mark no"></span>Not yet</li>
+          <li><span class="mark unknown"></span>Flag not mapped</li>
+        </ul>
+      </div>
+      <div id="beads-regions" class="regions"></div>
+    </section>
+
+    <div class="lower">
+      <section class="panel">
+        <div class="panel-head">
+          <h2><span class="kanji" lang="ja">瓢箪</span>Gourd Seeds</h2>
+          <span id="gourds-count" class="count"></span>
+        </div>
+        <ul id="gourds-list" class="checklist"></ul>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2><span class="kanji" lang="ja">忍具</span>Prosthetic Tools</h2>
+          <span id="tools-count" class="count"></span>
+        </div>
+        <ul id="tools-list" class="checklist"></ul>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2><span class="kanji" lang="ja">素材</span>Materials &amp; Texts</h2>
+        </div>
+        <ul id="quantities-list" class="bars"></ul>
+      </section>
     </div>
-    <div class="stat">
-      <span class="stat-label">Gourd Seeds</span>
-      <span id="gourds-total" class="stat-value">–</span>
-      <div class="bar-track"><div id="gourds-bar" class="bar-fill"></div></div>
-    </div>
-  </section>
 
-  <main>
-    <section class="card">
-      <h2>Prayer Beads <span id="beads-count" class="count"></span></h2>
-      <ul id="beads-list" class="checklist"></ul>
-    </section>
-
-    <section class="card">
-      <h2>Gourd Seeds <span id="gourds-count" class="count"></span></h2>
-      <ul id="gourds-list" class="checklist"></ul>
-    </section>
-
-    <section class="card">
-      <h2>Prosthetic Tools <span id="tools-count" class="count"></span></h2>
-      <ul id="tools-list" class="checklist"></ul>
-    </section>
-
-    <section class="card">
-      <h2>Quantity Targets</h2>
-      <ul id="quantities-list" class="bars"></ul>
-    </section>
-
-    <section class="card wide">
-      <h2>Endings <span class="hint">(manual checklist)</span></h2>
+    <section class="endings-section">
+      <div class="section-head">
+        <h2><span class="kanji" lang="ja">結末</span>Endings</h2>
+        <span class="hint">Manual checklist · tick each step yourself</span>
+      </div>
       <div id="endings" class="endings"></div>
     </section>
-  </main>
+
+    <footer>
+      <span>Read-only: this tool never writes to your save file.</span>
+      <span>Fan-made tool · not affiliated with FromSoftware or Activision</span>
+    </footer>
+  </div>
 
   <script src="app.js"></script>
 </body>

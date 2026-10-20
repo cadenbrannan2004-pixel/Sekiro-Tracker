@@ -56,7 +56,7 @@ def run():
             # a race condition where the web app reads the file while it's being written and gets a half file
             tmp = OUTPUT_PATH.with_suffix(".tmp")
             with open(tmp, "w") as f:
-                json.dump({"updated": time.time(), "slots": slots}, f, indent=2)
+                json.dump({"updated": time.time(), "save_file": save_path.name, "slots": slots}, f, indent=2)
             os.replace(tmp, OUTPUT_PATH)
 
             for idx, slot in slots.items():
