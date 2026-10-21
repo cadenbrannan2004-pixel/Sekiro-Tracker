@@ -1,29 +1,26 @@
 
 
-WARNING: Outdated readme for the most part, take what is here as a mock up readme rather than a fully finished one 
-
+WARNING: In-progress project but near the end of the development. Will add download instrutctions later when finished.
 
 # Sekiro Achievement Tracker
 
-A Python tool that reads Sekiro: Shadows Die Twice's save file directly and automatically tracks progress toward 100% completion(prayer beads, prosthetic tools, boss memories, and key resources).
+A Python tool that reads Sekiro: Shadows Die Twice's save file directly and automatically tracks progress toward 100% completion(prayer beads, prosthetic tools, endings, and key resources (lapis and carp scales)).
 
-Built as a personal project to learn binary file reverse-engineering, game save formats, and full-stack Python development.
+Built as a personal project!
 
 ## What it does
 
-Sekiro doesn't have a built-in completion tracker, and many collectibles (like Prayer Beads) share a single stackable item type in-game, making it impossible to tell which of the 40 locations you've actually visited just by checking your inventory. This tool solves that by reading the save file's event flags.
+Sekiro doesn't have a built-in completion tracker, and many collectibles (like Prayer Beads and gourd seeds) share a single stackable item type in-game, making it impossible to tell which of the 40 locations you've actually visited just by checking your inventory. This tool solves that by reading the save file's event flags.
 
 It tracks:
 - **Prayer Beads** (40 locations, grouped by region and source: boss drop, treasure, or shop purchase)
-- **Skills** (grouped by skill tree)
-- **Prosthetic Tools** (all 9 base tools)
-- **Boss Memories** (all 14 major bosses, tracked via inventory rather than flags)
-- **Key resources** (e.g. Lapis Lazuli, with configurable target thresholds)
-- **Endings** (manually checked off, since these are one-off story choices rather than something worth automating)
+- **Prosthetic Tools** (all 10 base tools)
+- **Endings** (all 4 endings with a manual checklist to keep track of where youre at)
+- **Key resources** (for example Lapis Lazuli, with configurable target thresholds)
 
 ## How it works
 
-Sekiro's PC save (`S0000.sl2`) is a proprietary binary container shared across FromSoftware's Souls engine. This project:
+Sekiro's PC save (`S0000.sl2`) is a proprietary binary container shared across FromSoftware's Souls engine:
 
 1. **Parses the save container** splits it into its 10 individual character save slots
 2. **Reads confirmed inventory offsets** (ported from community save-editor research) to check owned items, weapons, and goods quantities directly
@@ -35,7 +32,7 @@ No game files are modified. Everything is read-only
 
 ## Status
 
-Prayer bead and skill flag IDs are discovered incrementally through manual play, using SoulSplitter's live event flag logger combined with save-file diffing. See `bead_map.py` and `skill_map.py` for current mapping progress or unmapped entries report `null`. Also working to learn the frontend/gui portion through ai-assistance and other media options. 
+Gourd seeds are currently missing a few flag entries but will be finished extremely soon. Next up is testing and a need for input over what should be added or changed in the final product. A full dashboard is made and working with MY save file so that's where the testing comes in. Also figuring out the executable and download process for distrubution of the tool which will be added with screenshots here in the readme.
 
 # Google Sheet for all triggered event flags for each prayer bead/gourd seed drop in the game: 
 

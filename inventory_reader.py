@@ -2,7 +2,7 @@
 inventory_reader.py
 
 Parses the confirmed inventory array (goods + weapons + armor), ported
-from alfizari/Sekiro-Save-Editor's main_no_ai.py. 
+from alfizari/Sekiro-Save-Editor's main_no_ai.py.
 
 """
 
@@ -55,7 +55,9 @@ def parse_region(slot_data: bytes, start: int, length: int) -> list[InventoryRec
     offset = start
     end = start + length
     while offset < end:
-        gaitem_handle, item_id, quantity, index = struct.unpack_from("<IIII", slot_data, offset)
+        gaitem_handle, item_id, quantity, index = struct.unpack_from(
+            "<IIII", slot_data, offset
+        )
         records.append(InventoryRecord(gaitem_handle, item_id, quantity, index, offset))
         offset += RECORD_SIZE
     return records
@@ -78,7 +80,7 @@ def parse_all_goods_regions(slot_data: bytes) -> list[InventoryRecord]:
 
 
 def get_good_quantity(slot_data: bytes, item_id: int) -> int:
-    """Total quantity owned of a stackable good (e.g. Lapis Lazuli, id 6400),
+    """Total quantity owned of a stackable good
     summed across carried inventory + storage + key items, since
     a player may have banked some in storage."""
     total = 0

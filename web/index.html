@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Sekiro Tracker</title>
   <script>
-    // Apply the saved theme before first paint so the page never flashes the wrong one
+    // Apply the saved theme before first paint so the page never flashes wrong one
     try { const t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
   </script>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Optional: drop background.gif (e.g. flowing petals) into the web folder -->
+  // Optional: drop background.gif into the web folder
   <div id="backdrop" class="backdrop" aria-hidden="true"></div>
 
   <div class="page">
