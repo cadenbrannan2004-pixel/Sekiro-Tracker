@@ -16,10 +16,10 @@ GOURD_SEEDS: list[GourdLocation] = [
     # Pickups / Chests
     # --------------------------
     GourdLocation("Outskirts Stairway Idol", "Ashina Outskirts", PICKUP, 6725, video="https://youtu.be/UNumOeKDNDM?si=NaH5eR2Afyskl3Rb&t=21"),
-    GourdLocation("Upper Tower Antechamber Chest", "Ashina Castle", CHEST, video="https://youtu.be/UNumOeKDNDM?si=ZZPmXMUOCwaKN3EU&t=68"),
-    GourdLocation("Praying Monks Feet", "Senpou Temple", PICKUP, video="https://youtu.be/UNumOeKDNDM?si=pWrsZLYX4W3XEH1F&t=75"),
+    GourdLocation("Upper Tower Antechamber Chest", "Ashina Castle", CHEST, 6726, video="https://youtu.be/UNumOeKDNDM?si=ZZPmXMUOCwaKN3EU&t=68"),
+    GourdLocation("Praying Monks Feet", "Senpou Temple", PICKUP, 6727, video="https://youtu.be/UNumOeKDNDM?si=pWrsZLYX4W3XEH1F&t=75"),
     GourdLocation("Gun Fort Hut", "Sunken Valley", PICKUP, 6724, video="https://youtu.be/UNumOeKDNDM?si=lmUoxhqZwINerzZ6&t=86"),
-    GourdLocation("Canopy Tree", "Mibu Village", PICKUP, video="https://youtu.be/UNumOeKDNDM?si=Mu9TzvTuSjfyWgPz&t=104"),
+    GourdLocation("Canopy Tree", "Mibu Village", PICKUP, 6728, video="https://youtu.be/UNumOeKDNDM?si=Mu9TzvTuSjfyWgPz&t=104"),
     GourdLocation("Palace Grounds Large Chest", "Fountainhead Palace", CHEST, 6729, video="https://youtu.be/UNumOeKDNDM?si=MzHsEnfjKnK7AAEn&t=117"),
 
     # --------------------------

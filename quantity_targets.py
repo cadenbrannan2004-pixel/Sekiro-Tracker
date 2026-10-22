@@ -2,9 +2,7 @@
 quantity_targets.py
 
 For achievement-relevant items where progress is a COUNT rather than a
-picked-up/not-picked-up state -- e.g. Lapis Lazuli, needed in specific
-amounts to unlock certain endgame purchases. No flag table needed; this
-reuses the same confirmed inventory offsets as prosthetic_map.py.
+picked-up/not-picked-up state
 """
 
 from dataclasses import dataclass
@@ -18,17 +16,18 @@ class QuantityTarget:
     item_id: int
     target: int  # how many you actually need for the relevant achievement/purchase
     checkbox: bool = False  # one-per-save items: show held/not-held instead of a bar
+    video: str = ""  # YouTube links
 
 
 QUANTITY_TARGETS: list[QuantityTarget] = [
     # set targets to whatever   
-    QuantityTarget("Lapis Lazuli", 6400, target = 10),  
-    QuantityTarget("Treasure Carp Scale", 10000, target = 42),  
-    QuantityTarget("Shinobi Esoteric Text", 2920, target = 1, checkbox=True), 
-    QuantityTarget("Prosthetic Esoteric Text", 2921, target = 1, checkbox=True),
-    QuantityTarget("Ashina Esoteric Text", 2922, target = 1, checkbox=True),
-    QuantityTarget("Senpou Esoteric Text", 2923, target = 1, checkbox=True), 
-    QuantityTarget("Mushin Esoteric Text", 2924, target = 1, checkbox=True),
+    QuantityTarget("Lapis Lazuli", 6400, target = 10, video=""),  
+    QuantityTarget("Treasure Carp Scale", 10000, target = 42, video=""),  
+    QuantityTarget("Shinobi Esoteric Text", 2920, target = 1, checkbox=True, video=""), 
+    QuantityTarget("Prosthetic Esoteric Text", 2921, target = 1, checkbox=True, video=""),
+    QuantityTarget("Ashina Esoteric Text", 2922, target = 1, checkbox=True, video=""),
+    QuantityTarget("Senpou Esoteric Text", 2923, target = 1, checkbox=True, video=""), 
+    QuantityTarget("Mushin Esoteric Text", 2924, target = 1, checkbox=True, video=""),
 ]
 
 
@@ -41,5 +40,6 @@ def get_quantity_state(slot_data: bytes) -> dict[str, dict]:
             "target": item.target,
             "complete": have >= item.target,
             "checkbox": item.checkbox,
+            "video": item.video,
         }
     return result

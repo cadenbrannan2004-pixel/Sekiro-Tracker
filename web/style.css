@@ -383,7 +383,7 @@ h2 { margin: 0; font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
 
 .bars { list-style: none; margin: 0; padding: 0; }
 .bars li { padding: 8px 0 4px; font-size: 13px; }
-.bars .bar-label { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 6px; }
+.bars .bar-label { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 6px; }
 .bars .bar-label .qty { color: var(--plum); font-weight: 600; }
 .bars .bar-fill { background: var(--plum-fill); }
 

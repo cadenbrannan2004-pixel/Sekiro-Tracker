@@ -171,15 +171,15 @@ function renderQuantities(textsEl, listEl, quantities) {
   const entries = Object.entries(quantities);
   const textRows = entries
     .filter(([, info]) => info.checkbox)
-    .map(([name, info]) => ({ name, collected: info.complete }));
-  renderChecklist(textsEl, textRows);
+    .map(([name, info]) => ({ name, collected: info.complete, video: info.video }));
+  renderChecklist(textsEl, textRows, { videos: true });
 
   listEl.innerHTML = "";
   for (const [name, info] of entries.filter(([, info]) => !info.checkbox)) {
     const pct = info.target > 0 ? Math.min(100, (info.have / info.target) * 100) : 0;
     const li = document.createElement("li");
     li.innerHTML = `
-      <div class="bar-label"><span>${esc(name)}</span><span class="qty">${info.have} / ${info.target}</span></div>
+      <div class="bar-label"><span class="item-name">${esc(name)}</span><span class="qty">${info.have} / ${info.target}</span>${videoLink(info.video, true)}</div>
       <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
     `;
     listEl.appendChild(li);
@@ -240,7 +240,9 @@ function renderAll() {
   document.getElementById("gourds-count").textContent = countText(gourds, gourdRows);
   renderTotal("gourds", gourds, gourdRows.length);
 
-  const toolRows = Object.entries(report.prosthetic_tools.owned).map(([name, collected]) => ({ name, collected }));
+  const toolVideos = report.prosthetic_tools.videos || {};
+  const toolRows = Object.entries(report.prosthetic_tools.owned)
+    .map(([name, collected]) => ({ name, collected, video: toolVideos[name] }));
   const tools = renderChecklist(document.getElementById("tools-list"), toolRows, { videos: true });
   document.getElementById("tools-count").textContent = countText(tools, toolRows);
   renderTotal("tools", tools, toolRows.length);
