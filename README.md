@@ -1,6 +1,6 @@
 
 
-WARNING: In-progress project but near the end of the development. Download added but urls still need to be added before I publish anything rn.
+WARNING: In-progress project and still has room to add features
 
 # Sekiro Achievement Tracker
 
@@ -61,6 +61,11 @@ https://docs.google.com/spreadsheets/d/17YkjiKnKZTHUHFSkf_SZK5KQrgrUO5_V1XxE4lfP
 
 Gourd Seed:
 https://docs.google.com/spreadsheets/d/1BUwN0m1CTA2TQ7v4epO_x-rUQetOO8YpWVOXCfMXSrE/edit?gid=0#gid=0
+
+## Git Diagram on repo for more context:
+
+[![Architecture diagram](https://gitdiagram.com/diagram-badge.svg)](https://gitdiagram.com/cadenbrannan2004-pixel/sekiro-tracker?utm_source=readme&utm_medium=badge)
+
 
 ## Credits
 
