@@ -1,6 +1,6 @@
 
 
-WARNING: In-progress project but near the end of the development. Download added but urls still need to be downloaded before I publish anything rn.
+WARNING: In-progress project but near the end of the development. Download added but urls still need to be added before I publish anything rn.
 
 # Sekiro Achievement Tracker
 
