@@ -23,11 +23,11 @@ QUANTITY_TARGETS: list[QuantityTarget] = [
     # set targets to whatever   
     QuantityTarget("Lapis Lazuli", 6400, target = 10, video=""),  
     QuantityTarget("Treasure Carp Scale", 10000, target = 42, video=""),  
-    QuantityTarget("Shinobi Esoteric Text", 2920, target = 1, checkbox=True, video=""), 
-    QuantityTarget("Prosthetic Esoteric Text", 2921, target = 1, checkbox=True, video=""),
-    QuantityTarget("Ashina Esoteric Text", 2922, target = 1, checkbox=True, video=""),
-    QuantityTarget("Senpou Esoteric Text", 2923, target = 1, checkbox=True, video=""), 
-    QuantityTarget("Mushin Esoteric Text", 2924, target = 1, checkbox=True, video=""),
+    QuantityTarget("Shinobi Esoteric Text", 2920, target = 1, checkbox=True, video="https://youtu.be/aH-lHErhCjI?si=I6hQ8qhasIwkqHmt&t=40"), 
+    QuantityTarget("Prosthetic Esoteric Text", 2921, target = 1, checkbox=True, video="https://youtu.be/aH-lHErhCjI?si=JrDBnPV5fDf3dYLA&t=69"),
+    QuantityTarget("Ashina Esoteric Text", 2922, target = 1, checkbox=True, video="https://youtu.be/aH-lHErhCjI?si=OYdEv5QA1tCos6dK&t=98"),
+    QuantityTarget("Senpou Esoteric Text", 2923, target = 1, checkbox=True, video="https://youtu.be/aH-lHErhCjI?si=3aZ83BOyqgvd2OcA&t=199"), 
+    QuantityTarget("Mushin Esoteric Text", 2924, target = 1, checkbox=True, video="https://youtu.be/aH-lHErhCjI?si=xXiXrjFBS-XOPr_P&t=248"),
 ]
 
 
