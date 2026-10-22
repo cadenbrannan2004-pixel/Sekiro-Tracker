@@ -66,3 +66,9 @@ https://docs.google.com/spreadsheets/d/1BUwN0m1CTA2TQ7v4epO_x-rUQetOO8YpWVOXCfMX
 
 - Save file container structure adapted from [alfizari/Sekiro-Save-Editor](https://github.com/alfizari/Sekiro-Save-Editor)
 - Event flag discovery informed by [SoulSplitter](https://github.com/FrankvdStam/SoulSplitter)'s wiki and live logger tooling
+- Youtubers I used for the guides:
+   - https://www.youtube.com/@Kenjidarou
+   - https://www.youtube.com/@GuidesForUsAll
+   - https://www.youtube.com/@Fextralife
+   - https://www.youtube.com/@DarcbladeGuides
+   - https://www.youtube.com/@GoldenOrder
