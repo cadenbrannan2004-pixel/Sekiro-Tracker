@@ -4,6 +4,8 @@ WARNING: In-progress project but near the end of the development. Will add downl
 
 # Sekiro Achievement Tracker
 
+> **Beta:** ready for testing. If something looks wrong, please [open an issue](https://github.com/cadenbrannan2004-pixel/Sekiro-Tracker/issues).
+ 
 A Python tool that reads Sekiro: Shadows Die Twice's save file directly and automatically tracks progress toward 100% completion(prayer beads, prosthetic tools, endings, and key resources (lapis and carp scales)).
 
 Built as a personal project!
@@ -11,6 +13,24 @@ Built as a personal project!
 ## What it does
 
 Sekiro doesn't have a built-in completion tracker, and many collectibles (like Prayer Beads and gourd seeds) share a single stackable item type in-game, making it impossible to tell which of the 40 locations you've actually visited just by checking your inventory. This tool solves that by reading the save file's event flags.
+
+## Download and run
+ 
+1. Go to the [latest release](https://github.com/cadenbrannan2004-pixel/Sekiro-Tracker/releases/latest) and download `SekiroTracker.exe`.
+2. Put it in its own folder (for example `Documents\SekiroTracker`). It saves your ending checklist next to itself.
+3. Double-click `SekiroTracker.exe`. A small console window opens, then your dashboard opens in your browser.
+4. Play the game. The dashboard updates every time Sekiro saves (resting at an idol, picking things up, quitting to the menu).
+**To close it:** close the dashboard tab (the tracker shuts down a few seconds later), or close the console window.
+ 
+### "Windows protected your PC"
+ 
+The app isn't code-signed, so Windows SmartScreen may warn you the first time. Click **More info**, then **Run anyway**. The full source code is in this repository if you want to check what it does!
+ 
+## Requirements
+ 
+- Windows PC with Sekiro: Shadows Die Twice on Steam
+- The game has saved at least once (your save is found automatically at `%APPDATA%\Sekiro\<your Steam ID>\S0000.sl2`)
+- Tested on game version 1.06
 
 It tracks:
 - **Prayer Beads** (40 locations, grouped by region and source: boss drop, treasure, or shop purchase)
