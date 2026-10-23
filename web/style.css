@@ -227,6 +227,40 @@ h1 {
 .tab.active { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 .tab.active .ng { background: rgba(255, 255, 255, 0.25); color: var(--on-accent); }
 
+.slot-tabs { display: contents; }
+.settings-tab { margin-left: auto; }
+.settings-tab svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Settings: one name field per save */
+.name-list { list-style: none; margin: 0; padding: 0; max-width: 520px; }
+.name-list li {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.name-list li:last-child { border-bottom: 0; }
+.name-list label { width: 96px; flex-shrink: 0; font-size: 13px; color: var(--dim); }
+.name-list label .ng { margin-left: 6px; font-size: 11px; font-weight: 600; }
+.name-list input {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 12px;
+  font: inherit;
+  font-size: 13px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  transition: border-color 150ms ease-out;
+}
+.name-list input:hover { border-color: var(--dim); }
+.name-list input:focus-visible { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.name-list .saved { width: 44px; font-size: 12px; color: var(--online); opacity: 0; transition: opacity 200ms ease-out; }
+.name-list .saved.show { opacity: 1; }
+.settings-empty { margin: 0; font-size: 13px; color: var(--dim); }
+
 /* Totals strip */
 .summary {
   display: grid;

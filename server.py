@@ -4,7 +4,8 @@ server.py
 Local web frontend for the Sekiro tracker.
 
 Serves achievement_state.json (written on a loop by tracker.py) as JSON
-over HTTP, and persists a manual ending checklist to ending_state.json.
+over HTTP, and persists a manual ending checklist to ending_state.json and
+custom save slot names to slot_names.json.
 
 Run alongside tracker.py:
     uv run tracker.py       # in one terminal
@@ -22,7 +23,9 @@ from endings import ENDINGS
 APP_ROOT = Path(__file__).parent
 STATE_PATH = APP_ROOT / "achievement_state.json"
 ENDING_STATE_PATH = APP_ROOT / "ending_state.json"
+SLOT_NAMES_PATH = APP_ROOT / "slot_names.json"
 WEB_DIR = APP_ROOT / "web"
+MAX_NAME_LENGTH = 32
 
 app = Flask(__name__, static_folder=None)
 
@@ -32,6 +35,11 @@ def _load_json(path: Path, default):
         return default
     with open(path) as f:
         return json.load(f)
+
+
+def _save_json(path: Path, data) -> None:
+    with open(path, "w") as f:
+        json.dump(data, f, indent=2)
 
 
 @app.route("/")
@@ -50,7 +58,34 @@ def api_state():
     if state is None:
         return jsonify({"error": "achievement_state.json not found yet -- "
                                   "is tracker.py running?"}), 404
+
+    # A name belongs to the character in that slot, so drop it once the save is deleted
+    names = _load_json(SLOT_NAMES_PATH, {})
+    kept = {slot: name for slot, name in names.items() if slot in state.get("slots", {})}
+    if kept != names:
+        _save_json(SLOT_NAMES_PATH, kept)
+    state["names"] = kept
     return jsonify(state)
+
+
+@app.route("/api/slot-names", methods=["POST"])
+def api_slot_names_post():
+    payload = request.get_json(force=True, silent=True) or {}
+    slot = payload.get("slot")
+    name = payload.get("name")
+
+    state = _load_json(STATE_PATH, {}) or {}
+    if slot not in state.get("slots", {}) or not isinstance(name, str):
+        return jsonify({"error": "expected {slot: <active slot id>, name: <string>}"}), 400
+
+    names = _load_json(SLOT_NAMES_PATH, {})
+    name = name.strip()[:MAX_NAME_LENGTH]
+    if name:
+        names[slot] = name
+    else:
+        names.pop(slot, None)  # blank = back to the default "Slot N"
+    _save_json(SLOT_NAMES_PATH, names)
+    return jsonify({"ok": True, "name": name})
 
 
 @app.route("/api/endings", methods=["GET"])
@@ -84,8 +119,7 @@ def api_endings_post():
 
     state = _load_json(ENDING_STATE_PATH, {})
     state[req_id] = checked_value
-    with open(ENDING_STATE_PATH, "w") as f:
-        json.dump(state, f, indent=2)
+    _save_json(ENDING_STATE_PATH, state)
     return jsonify({"ok": True})
 
 

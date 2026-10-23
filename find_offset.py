@@ -37,6 +37,19 @@ The offset that survives the intersection is the answer. Hardcode it in
 event_flags.py as FLAG_TABLE_OFFSET.
 
 Snapshots live in ./saves/ (already gitignored).
+
+FINDING THE SLOT "ACTIVE" FLAGS (for save_reader.find_active_slots):
+
+  Deleting a character doesn't wipe its slot, so the per-slot active flags
+  live in the summary block after the 10 character slots instead.
+
+  1. At the main menu:    uv run find_offset.py snap has_char
+  2. Delete a character, still at the main menu:
+                          uv run find_offset.py snap deleted
+  3. uv run find_offset.py tail has_char deleted
+
+  Look for a byte that went 01 -> 00 among a run of 10 similar bytes, one
+  per slot.
 """
 
 from __future__ import annotations
@@ -46,7 +59,8 @@ import shutil
 import sys
 from pathlib import Path
 
-from save_reader import default_save_path, read_save_file, extract_slot
+from save_reader import (default_save_path, read_save_file, extract_slot,
+                         FIRST_SLOT_OFFSET, SLOT_STRIDE, NUM_SLOTS)
 
 SNAP_DIR = Path("saves")
 
@@ -133,6 +147,24 @@ def cmd_diff(args: argparse.Namespace) -> None:
           "`intersect` -- see the header of this file.")
 
 
+def cmd_tail(args: argparse.Namespace) -> None:
+    """Diff the bytes after the last character slot (the summary block)."""
+    paths = [SNAP_DIR / f"{label}.sl2" for label in (args.before, args.after)]
+    for path in paths:
+        if not path.exists():
+            sys.exit(f"No snapshot at {path}.  Run:  uv run find_offset.py snap {path.stem}")
+    before, after = (read_save_file(path) for path in paths)
+    if len(before) != len(after):
+        sys.exit("Snapshots differ in size -- corrupt copy?")
+
+    start = FIRST_SLOT_OFFSET + NUM_SLOTS * SLOT_STRIDE
+    changed = [(off, b, a) for off, (b, a) in enumerate(zip(before[start:], after[start:]), start)
+               if b != a]
+    print(f"{len(changed)} bytes differ after the last slot (file offset 0x{start:X} onwards).")
+    for off, b, a in changed[:60]:
+        print(f"  file 0x{off:08X}  (block +0x{off - start:X})  {b:02X} -> {a:02X}")
+
+
 def cmd_intersect(args: argparse.Namespace) -> None:
     if not args.pair or len(args.pair) < 2:
         sys.exit("Need at least two --pair BEFORE AFTER FLAGID arguments.")
@@ -178,6 +210,11 @@ def main() -> None:
     d.add_argument("--flag-id", type=int, default=None,
                    help="event_flag_id you expect to have flipped (see bead_map.py)")
     d.set_defaults(func=cmd_diff)
+
+    t = sub.add_parser("tail", help="diff the summary block after the 10 slots (active flags)")
+    t.add_argument("before")
+    t.add_argument("after")
+    t.set_defaults(func=cmd_tail)
 
     i = sub.add_parser("intersect", help="find the offset consistent across several pairs")
     i.add_argument("--slot", type=int, default=0)
