@@ -18,7 +18,7 @@
     <header>
       <div class="title-block">
         <h1>Sekiro Tracker</h1>
-        <p class="subtitle">Prayer beads, gourd seeds, prosthetics, materials and endings, read live from your save.</p>
+        <p class="subtitle">Prayer beads, gourd seeds, prosthetics, materials, bosses and endings, read live from your save.</p>
         <span id="status" class="status">Connecting…</span>
       </div>
       <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Switch to dark theme">
@@ -67,6 +67,32 @@
         <span id="endings-total" class="stat-value">–</span>
         <div class="bar-track"><div id="endings-bar" class="bar-fill"></div></div>
       </div>
+      <div class="stat">
+        <span class="stat-label">Bosses</span>
+        <span id="bosses-total" class="stat-value">–</span>
+        <div class="bar-track"><div id="bosses-bar" class="bar-fill"></div></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Bosses · Man Without Equal</h2>
+        <span id="bosses-count" class="count"></span>
+      </div>
+      <p class="panel-note">Read from the Steam account signed in on this PC. Steam has nothing for bosses without an achievement, so check those yourself.</p>
+      <div class="boss-scroller">
+        <button class="scroll-btn prev" type="button" aria-label="Scroll left" data-target="boss-cards">‹</button>
+        <ul id="boss-cards" class="boss-cards"></ul>
+        <button class="scroll-btn next" type="button" aria-label="Scroll right" data-target="boss-cards">›</button>
+      </div>
+
+      <div class="panel-head sub-head">
+        <h3>Hidden Boss Achievements</h3>
+        <span id="hidden-bosses-count" class="count"></span>
+      </div>
+      <div class="boss-scroller">
+        <ul id="hidden-boss-cards" class="boss-cards"></ul>
+      </div>
     </section>
 
     <section class="panel">
@@ -112,7 +138,7 @@
     <section class="endings-section">
       <div class="section-head">
         <h2>Endings</h2>
-        <span class="hint">Manual checklist · tick each step yourself</span>
+        <span class="hint">Manual checklist so check each step yourself</span>
       </div>
       <div id="endings" class="endings"></div>
     </section>

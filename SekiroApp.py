@@ -23,6 +23,7 @@ if getattr(sys, "frozen", False):
     server.WEB_DIR = Path(sys._MEIPASS) / "web"
     server.STATE_PATH = tracker.OUTPUT_PATH = data_dir / "achievement_state.json"
     server.ENDING_STATE_PATH = data_dir / "ending_state.json"
+    server.BOSS_STATE_PATH = data_dir / "boss_state.json"
     server.SLOT_NAMES_PATH = data_dir / "slot_names.json"
 
 
