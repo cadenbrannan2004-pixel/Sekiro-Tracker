@@ -197,21 +197,83 @@ function ngLabel(entry) {
   return ng === 0 ? "NG" : `NG+${ng}`;
 }
 
+// Custom name from settings, or the default "Slot N"
+function slotLabel(id) {
+  const names = (lastData && lastData.names) || {};
+  return names[id] || `Slot ${Number(id) + 1}`;
+}
+
 function renderTabs(slots) {
   const nav = document.getElementById("slot-tabs");
   nav.innerHTML = "";
   for (const [id, entry] of Object.entries(slots)) {
     const btn = document.createElement("button");
     btn.type = "button";
-    btn.className = "tab" + (id === selectedSlot ? " active" : "");
+    btn.className = "tab" + (id === selectedSlot && !showingSettings ? " active" : "");
     const ng = ngLabel(entry);
-    btn.innerHTML = `Slot ${Number(id) + 1}` + (ng ? `<span class="ng">${ng}</span>` : "");
+    btn.innerHTML = esc(slotLabel(id)) + (ng ? `<span class="ng">${ng}</span>` : "");
     btn.addEventListener("click", () => {
       selectedSlot = id;
+      showingSettings = false;
       try { localStorage.setItem("selectedSlot", id); } catch (e) { /* ignore */ }
       renderAll();
     });
     nav.appendChild(btn);
+  }
+  document.getElementById("settings-tab").classList.toggle("active", showingSettings);
+}
+
+// Settings view: one name field per save
+let showingSettings = false;
+let settingsKey = null;  // which slots the fields were built for, so polling doesn't wipe typing
+
+document.getElementById("settings-tab").addEventListener("click", () => {
+  showingSettings = true;
+  settingsKey = null;
+  renderAll();
+});
+
+async function saveSlotName(id, name, savedEl) {
+  const res = await fetch("/api/slot-names", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ slot: id, name }),
+  });
+  if (!res.ok) return;
+  const body = await res.json();
+  lastData.names = { ...lastData.names };
+  if (body.name) lastData.names[id] = body.name;
+  else delete lastData.names[id];
+  renderTabs(lastData.slots || {});
+  savedEl.classList.add("show");
+  setTimeout(() => savedEl.classList.remove("show"), 1200);
+}
+
+function renderSettings(slots) {
+  const ids = Object.keys(slots);
+  const key = ids.join(",");
+  const list = document.getElementById("slot-names");
+  if (key === settingsKey || list.contains(document.activeElement)) return;
+  settingsKey = key;
+
+  list.innerHTML = "";
+  if (ids.length === 0) {
+    list.innerHTML = `<li class="settings-empty">No saves found yet.</li>`;
+    return;
+  }
+  const names = lastData.names || {};
+  for (const id of ids) {
+    const li = document.createElement("li");
+    const inputId = `slot-name-${id}`;
+    const ng = ngLabel(slots[id]);
+    li.innerHTML = `<label for="${inputId}">Slot ${Number(id) + 1}${ng ? `<span class="ng">${ng}</span>` : ""}</label>` +
+                   `<input id="${inputId}" type="text" maxlength="32" autocomplete="off" placeholder="Slot ${Number(id) + 1}">` +
+                   `<span class="saved" aria-live="polite">Saved</span>`;
+    const input = li.querySelector("input");
+    input.value = names[id] || "";
+    input.addEventListener("keydown", (event) => { if (event.key === "Enter") input.blur(); });
+    input.addEventListener("change", () => saveSlotName(id, input.value, li.querySelector(".saved")));
+    list.appendChild(li);
   }
 }
 
@@ -219,13 +281,19 @@ function renderAll() {
   if (!lastData) return;
   const slots = lastData.slots || {};
   const ids = Object.keys(slots);
-  if (ids.length === 0) {
-    setStatus("no active save slots found", "error");
-    renderTabs({});
+  if (!(selectedSlot in slots)) selectedSlot = ids[0] ?? null;  // saved choice vanished -> fall back
+  renderTabs(slots);
+
+  document.getElementById("settings-view").hidden = !showingSettings;
+  document.getElementById("tracker-view").hidden = showingSettings;
+  if (showingSettings) {
+    renderSettings(slots);
     return;
   }
-  if (!(selectedSlot in slots)) selectedSlot = ids[0];  // saved choice vanished -> fall back
-  renderTabs(slots);
+  if (ids.length === 0) {
+    setStatus("no active save slots found", "error");
+    return;
+  }
 
   firstLook = !(selectedSlot in seenBySlot);
   seen = seenBySlot[selectedSlot] ??= new Set();
