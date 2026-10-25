@@ -11,6 +11,8 @@ import os
 import struct
 from pathlib import Path
 
+from steam_achievements import active_steam_id64
+
 SLOT_SIZE = 0x100000
 SLOT_STRIDE = 0x100010  # slot size + inter-slot padding
 HEADER_SIZE = 0x300
@@ -23,19 +25,30 @@ ACTIVE_FLAGS_OFFSET = 0xA00484
 
 
 def default_save_path() -> Path | None:
-    """Best-effort guess at the PC save location. Returns the first
-    S0000.sl2 found under the standard Sekiro save directory, or None."""
+    """Best-effort guess at the PC save location. Each Steam account gets its
+    own %APPDATA%\\Sekiro\\<steamid64> folder, so this prefers the account
+    signed in to Steam, then the most recently saved S0000.sl2, or None."""
     appdata = os.environ.get("APPDATA")
     if not appdata:
         return None
     root = Path(appdata) / "Sekiro"
     if not root.exists():
         return None
-    for steam_id_dir in root.iterdir():
-        candidate = steam_id_dir / "S0000.sl2"
+
+    active = active_steam_id64()
+    if active is not None:
+        candidate = root / str(active) / "S0000.sl2"
         if candidate.exists():
             return candidate
-    return None
+
+    saves = [d / "S0000.sl2" for d in root.iterdir() if (d / "S0000.sl2").exists()]
+    return max(saves, key=lambda p: p.stat().st_mtime, default=None)
+
+
+def save_owner_steam_id64(save_path: Path) -> int | None:
+    """The steamid64 a save belongs to, from its folder name."""
+    name = save_path.parent.name
+    return int(name) if name.isdigit() else None
 
 
 def read_save_file(path: Path) -> bytes:

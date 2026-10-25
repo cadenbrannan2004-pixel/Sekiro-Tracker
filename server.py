@@ -4,8 +4,10 @@ server.py
 Local web frontend for the Sekiro tracker.
 
 Serves achievement_state.json (written on a loop by tracker.py) as JSON
-over HTTP, and persists a manual ending checklist to ending_state.json and
-custom save slot names to slot_names.json.
+over HTTP with account-wide boss achievements from Steam's local cache
+added, and persists a manual ending checklist to ending_state.json, manual
+boss checks (per Steam account) to boss_state.json and custom save slot
+names to slot_names.json.
 
 Run alongside tracker.py:
     uv run tracker.py       # in one terminal
@@ -18,11 +20,15 @@ from pathlib import Path
 
 from flask import Flask, jsonify, request, send_from_directory
 
+from boss_map import MANUAL_IDS, get_account_bosses
 from endings import ENDINGS
+from save_reader import default_save_path, save_owner_steam_id64
+from steam_achievements import read_achievements
 
 APP_ROOT = Path(__file__).parent
 STATE_PATH = APP_ROOT / "achievement_state.json"
 ENDING_STATE_PATH = APP_ROOT / "ending_state.json"
+BOSS_STATE_PATH = APP_ROOT / "boss_state.json"
 SLOT_NAMES_PATH = APP_ROOT / "slot_names.json"
 WEB_DIR = APP_ROOT / "web"
 MAX_NAME_LENGTH = 32
@@ -52,6 +58,13 @@ def static_files(filename):
     return send_from_directory(WEB_DIR, filename)
 
 
+def _current_account() -> str | None:
+    """steamid64 (as a string) of the account whose save is being tracked."""
+    save_path = default_save_path()
+    steam_id = save_owner_steam_id64(save_path) if save_path else None
+    return None if steam_id is None else str(steam_id)
+
+
 @app.route("/api/state")
 def api_state():
     state = _load_json(STATE_PATH, None)
@@ -65,6 +78,10 @@ def api_state():
     if kept != names:
         _save_json(SLOT_NAMES_PATH, kept)
     state["names"] = kept
+    account = _current_account()
+    achievements = read_achievements(int(account)) if account else None
+    checked = _load_json(BOSS_STATE_PATH, {}).get(account, {}) if account else {}
+    state["bosses"] = get_account_bosses(achievements, checked)
     return jsonify(state)
 
 
@@ -120,6 +137,25 @@ def api_endings_post():
     state = _load_json(ENDING_STATE_PATH, {})
     state[req_id] = checked_value
     _save_json(ENDING_STATE_PATH, state)
+    return jsonify({"ok": True})
+
+
+
+# Manual checks for bosses Steam has no achievement for, kept per Steam account
+@app.route("/api/bosses", methods=["POST"])
+def api_bosses_post():
+    payload = request.get_json(force=True, silent=True) or {}
+    boss_id = payload.get("id")
+    checked_value = payload.get("checked")
+    if boss_id not in MANUAL_IDS or not isinstance(checked_value, bool):
+        return jsonify({"error": "expected {id: <manual boss id>, checked: <bool>}"}), 400
+
+    account = _current_account()
+    if account is None:
+        return jsonify({"error": "no Steam account save found"}), 409
+    state = _load_json(BOSS_STATE_PATH, {})
+    state.setdefault(account, {})[boss_id] = checked_value
+    _save_json(BOSS_STATE_PATH, state)
     return jsonify({"ok": True})
 
 

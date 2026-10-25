@@ -264,7 +264,7 @@ h1 {
 /* Totals strip */
 .summary {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 16px;
   padding-top: 20px;
 }
@@ -389,7 +389,7 @@ h2 { margin: 0; font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
 .video.placeholder { visibility: hidden; }
 
 /* Status marks: filled pink check = collected, ring = not yet, dashed = flag not mapped */
-.check-icon, .mark.yes::after, .ending input[type="checkbox"]:checked::after {
+.check-icon, .mark.yes::after, .ending input[type="checkbox"]:checked::after, .boss-card input[type="checkbox"]:checked::after {
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.2 5 8.6l4.5-5' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.2 5 8.6l4.5-5' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
 }
@@ -434,6 +434,84 @@ h2 { margin: 0; font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
   border-radius: 999px;
   transition: width 400ms cubic-bezier(0.16, 1, 0.3, 1);
 }
+
+/* Bosses: side-scrolling strips of cards, Man Without Equal on top, hidden achievements below */
+.sub-head { margin: 24px 0 12px; }
+.sub-head h3 { margin: 0; font-size: 15px; font-weight: 650; }
+
+.boss-scroller { position: relative; }
+
+.boss-cards {
+  list-style: none;
+  margin: 0;
+  padding: 2px 2px 12px;
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 0 2px;
+  overscroll-behavior-x: contain;
+}
+
+.boss-card {
+  flex: 0 0 200px;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 14px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: background-color 150ms ease-out, border-color 150ms ease-out;
+}
+.boss-card:hover { background: var(--surface-2); }
+.boss-card.yes { border-color: var(--accent); }
+.boss-card.yes h3 { color: var(--dim); }
+.boss-card.unknown h3 { color: var(--dim); font-style: italic; }
+.boss-card.new { background: var(--accent-soft); }
+.boss-card.just-seen { animation: seen 700ms ease-out; }
+
+.boss-top { display: flex; justify-content: space-between; align-items: center; min-height: 24px; margin-bottom: 4px; }
+.boss-card h3 { margin: 0; font-size: 14px; font-weight: 650; line-height: 1.3; }
+.boss-card label { cursor: pointer; }
+
+.achievement {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--accent-text);
+}
+.achievement svg { flex-shrink: 0; width: 12px; height: 12px; fill: currentColor; }
+.achievement.none { color: var(--dim); font-weight: 400; }
+.boss-note { font-size: 11px; line-height: 1.4; color: var(--dim); }
+
+.scroll-btn {
+  position: absolute;
+  top: calc(50% - 6px);
+  z-index: 1;
+  width: 32px;
+  height: 32px;
+  transform: translateY(-50%);
+  display: grid;
+  place-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 18px;
+  line-height: 1;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: background-color 150ms ease-out, border-color 150ms ease-out;
+}
+.scroll-btn:hover { background: var(--surface-2); border-color: var(--dim); }
+.scroll-btn.prev { left: -14px; }
+.scroll-btn.next { right: -14px; }
 
 /* Endings */
 .endings-section { margin-top: 40px; }
@@ -489,7 +567,7 @@ h2 { margin: 0; font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
 .ending label { cursor: pointer; }
 .ending input:checked + label { color: var(--dim); }
 
-.ending input[type="checkbox"] {
+.ending input[type="checkbox"], .boss-card input[type="checkbox"] {
   appearance: none;
   flex-shrink: 0;
   width: 16px;
@@ -503,9 +581,9 @@ h2 { margin: 0; font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
   place-content: center;
   transition: background-color 150ms ease-out, border-color 150ms ease-out;
 }
-.ending input[type="checkbox"]:hover { border-color: var(--accent); }
-.ending input[type="checkbox"]:checked { background: var(--accent); border-color: var(--accent); }
-.ending input[type="checkbox"]:checked::after { content: ""; width: 11px; height: 11px; background: var(--on-accent); }
+.ending input[type="checkbox"]:hover, .boss-card input[type="checkbox"]:hover { border-color: var(--accent); }
+.ending input[type="checkbox"]:checked, .boss-card input[type="checkbox"]:checked { background: var(--accent); border-color: var(--accent); }
+.ending input[type="checkbox"]:checked::after, .boss-card input[type="checkbox"]:checked::after { content: ""; width: 11px; height: 11px; background: var(--on-accent); }
 
 footer {
   display: flex;
@@ -521,7 +599,7 @@ footer {
 
 /* Narrower screens */
 @media (max-width: 1000px) {
-  .summary { grid-template-columns: repeat(2, 1fr); }
+  .summary { grid-template-columns: repeat(3, 1fr); }
   .regions { columns: 2; }
   .lower { grid-template-columns: repeat(2, 1fr); }
   .endings { grid-template-columns: repeat(2, 1fr); }
@@ -537,5 +615,7 @@ footer {
   .stat-left { font-size: 11px; }
   .regions { columns: 1; }
   .panel { padding: 18px 16px; }
+  .scroll-btn { display: none; }   /* swipe instead on touch-sized screens */
+  .boss-card { flex-basis: 170px; }
   .banner-art { max-width: 70%; opacity: 0.5; right: 0; }
 }

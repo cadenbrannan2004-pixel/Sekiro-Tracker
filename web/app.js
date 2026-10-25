@@ -186,6 +186,80 @@ function renderQuantities(textsEl, listEl, quantities) {
   }
 }
 
+const TROPHY_ICON = `<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1h6v1.5h2V4a2.5 2.5 0 0 1-2.2 2.5A3 3 0 0 1 6.8 8.4V10H8.5v1h-5v-1h1.7V8.4a3 3 0 0 1-2-1.9A2.5 2.5 0 0 1 1 4V2.5h2zm-1 2.5V4a1.5 1.5 0 0 0 1 1.4V3.5zm8 0H9v1.9A1.5 1.5 0 0 0 10 4z"/></svg>`;
+
+function achievementLine(name) {
+  return name
+    ? `<span class="achievement">${TROPHY_ICON}${esc(name)}</span>`
+    : `<span class="achievement none">No Steam achievement</span>`;
+}
+
+const BOSS_MARK_LABELS = { yes: "Defeated", no: "Not yet", unknown: "Not readable" };
+
+async function toggleBoss(bossId, checked) {
+  await fetch("/api/bosses", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id: bossId, checked }),
+  });
+  refreshState();
+}
+
+// One card per boss: a Steam achievement marks it automatically, bosses without one get a checkbox
+function renderBossCards(listEl, bosses) {
+  listEl.innerHTML = "";
+  for (const boss of bosses) {
+    const li = document.createElement("li");
+    const mark = markFor(boss.defeated);
+    li.className = `boss-card ${mark}` + (boss.manual ? " manual" : "");
+    const checkboxId = `boss-${boss.id}`;
+    const status = boss.manual
+      ? `<input type="checkbox" id="${esc(checkboxId)}" ${boss.defeated ? "checked" : ""}>`
+      : `<span class="mark ${mark}" role="img" aria-label="${BOSS_MARK_LABELS[mark]}"></span>`;
+    const title = boss.manual ? `<label for="${esc(checkboxId)}">${esc(boss.name)}</label>` : esc(boss.name);
+    li.innerHTML = `<div class="boss-top">${status}${videoLink(boss.video, false)}</div>` +
+                   `<h3>${title}</h3>` +
+                   `<span class="region-tag">${esc(boss.region)}</span>` +
+                   (boss.manual
+                     ? `<span class="achievement none">No Steam achievement so check it yourself</span>`
+                     : achievementLine(boss.achievement)) +
+                   (boss.note ? `<span class="boss-note">${esc(boss.note)}</span>` : "");
+    if (boss.manual) {
+      li.querySelector("input").addEventListener("change", (event) => toggleBoss(boss.id, event.target.checked));
+    } else if (boss.defeated === true) {
+      markNew(li, `bosses:${boss.name}`);
+    }
+    listEl.appendChild(li);
+  }
+  return bosses.filter((b) => b.defeated === true).length;
+}
+
+// Account-wide, so this is the same whichever slot tab is open
+function renderBosses(account) {
+  const countFor = (done, rows) => countText(done, rows.map((b) => ({ collected: b.defeated })));
+  const required = account.required || [];
+  const hidden = account.hidden || [];
+
+  const done = renderBossCards(document.getElementById("boss-cards"), required);
+  renderTotal("bosses", done, required.length);
+  let count = countFor(done, required);
+  if (account.man_without_equal === true) count = "Man Without Equal unlocked";
+  else if (!account.steam_available) count += " · Steam achievements not found";
+  document.getElementById("bosses-count").textContent = count;
+
+  const hiddenDone = renderBossCards(document.getElementById("hidden-boss-cards"), hidden);
+  document.getElementById("hidden-bosses-count").textContent = countFor(hiddenDone, hidden);
+}
+
+// Arrow buttons page the strip by most of its visible width
+for (const btn of document.querySelectorAll(".scroll-btn")) {
+  btn.addEventListener("click", () => {
+    const strip = document.getElementById(btn.dataset.target);
+    const dir = btn.classList.contains("next") ? 1 : -1;
+    strip.scrollBy({ left: dir * strip.clientWidth * 0.8, behavior: "smooth" });
+  });
+}
+
 let selectedSlot = null;
 let lastData = null;
 
@@ -317,6 +391,8 @@ function renderAll() {
 
   renderQuantities(document.getElementById("texts-list"), document.getElementById("quantities-list"),
                    report.quantity_targets);
+
+  renderBosses(lastData.bosses || {});
 }
 
 function agoText(seconds) {
