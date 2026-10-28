@@ -80,12 +80,118 @@ const MARK_LABELS = { yes: "Collected", no: "Not yet", unknown: "Flag not mapped
 
 // Only https links, so a bad paste can't become a javascript: URL.
 // keepSpace leaves an invisible slot so rows without a video still line up.
-function videoLink(url, keepSpace) {
+// key names the row so the inline player can find it again after a re-render.
+function videoLink(url, keepSpace, key) {
   if (!url || !url.startsWith("https://")) {
     return keepSpace ? `<span class="video placeholder" aria-hidden="true"></span>` : "";
   }
-  return `<a class="video" href="${esc(url)}" target="_blank" rel="noopener" title="Watch on YouTube" aria-label="Watch on YouTube">${PLAY_ICON}</a>`;
+  return `<a class="video" href="${esc(url)}" target="_blank" rel="noopener" data-video-key="${esc(key)}" title="Watch video" aria-label="Watch video">${PLAY_ICON}</a>`;
 }
+
+// Inline player: a video arrow opens the video in a slot under its row, and opening
+// another (or clicking the same arrow) closes it. The lists rebuild on every poll and
+// moving an iframe reloads it, so the player lives outside them and sits over an
+// empty slot that each render puts back in place.
+const player = document.createElement("div");
+player.id = "video-player";
+player.hidden = true;
+player.innerHTML = `<div class="video-bar"><a class="video-external" target="_blank" rel="noopener">Open on YouTube</a>` +
+                   `<button type="button" class="video-close" aria-label="Close video">×</button></div>` +
+                   `<iframe title="Video guide" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
+document.body.appendChild(player);
+const playerFrame = player.querySelector("iframe");
+let openVideoKey = null;
+
+// youtu.be/ID?t=72 or youtube.com/watch?v=ID&t=1m12s -> embed URL; null for anything else
+function embedUrl(url) {
+  let u;
+  try { u = new URL(url); } catch (e) { return null; }
+  const host = u.hostname.replace(/^(www|m)\./, "");
+  let id = null;
+  if (host === "youtu.be") id = u.pathname.slice(1);
+  else if (host === "youtube.com") {
+    id = u.pathname === "/watch" ? u.searchParams.get("v") : (u.pathname.match(/^\/(?:embed|shorts|live)\/([^/]+)/) || [])[1];
+  }
+  if (!id || !/^[\w-]+$/.test(id)) return null;
+  const t = (u.searchParams.get("t") || u.searchParams.get("start") || "").match(/^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s?)?$/);
+  const start = t ? (+t[1] || 0) * 3600 + (+t[2] || 0) * 60 + (+t[3] || 0) : 0;
+  return `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0` + (start ? `&start=${start}` : "");
+}
+
+// Grows (or shrinks) the slot so the rows below glide out of the way, while the player
+// is revealed top-down over it. Returns the slot's animation, or null if motion is off.
+function slideVideo(slot, closing) {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return null;
+  const open = { height: `${slot.scrollHeight}px`, marginTop: "6px", marginBottom: "12px" };
+  const shut = { height: "0px", marginTop: "0px", marginBottom: "0px" };
+  const shown = { clipPath: "inset(0 0 0 0)" };
+  const hidden = { clipPath: "inset(0 0 100% 0)" };
+  const timing = { duration: 280, easing: "cubic-bezier(0.2, 0.8, 0.2, 1)" };
+  const anim = slot.animate(closing ? [open, shut] : [shut, open], timing);
+  player.animate(closing ? [shown, hidden] : [hidden, shown], timing);
+  const follow = () => { positionPlayer(); if (anim.playState === "running") requestAnimationFrame(follow); };
+  requestAnimationFrame(follow);
+  return anim;
+}
+
+function closeVideo(animate = false) {
+  const slot = document.querySelector(".video-slot");
+  openVideoKey = null;
+  document.querySelector("a.playing")?.classList.remove("playing");
+  const finish = () => {
+    if (openVideoKey) return;  // another video opened mid-slide
+    playerFrame.src = "about:blank";  // stops playback
+    player.hidden = true;
+    placeVideo();
+  };
+  const anim = animate && slot ? slideVideo(slot, true) : null;
+  if (anim) anim.finished.then(finish, () => {});
+  else finish();
+}
+
+function positionPlayer() {
+  const slot = document.querySelector(".video-slot");
+  if (!slot) return;
+  const r = slot.getBoundingClientRect();
+  // scrollHeight is the slot's full size even while it is sliding open or shut
+  Object.assign(player.style, {
+    top: `${r.top + scrollY}px`, left: `${r.left + scrollX}px`, width: `${r.width}px`, height: `${slot.scrollHeight}px`,
+  });
+}
+
+// Puts the empty slot under the open video's row (under the whole strip for boss cards)
+function placeVideo(animate = false) {
+  document.querySelector(".video-slot")?.remove();
+  if (!openVideoKey) return;
+  const link = document.querySelector(`a[data-video-key="${CSS.escape(openVideoKey)}"]`);
+  if (!link || !link.getClientRects().length) { closeVideo(); return; }  // row gone or view hidden
+  link.classList.add("playing");
+  const after = link.closest(".boss-scroller") || link.closest("li") || link;
+  const slot = document.createElement(after.tagName === "LI" ? "li" : "div");
+  slot.className = "video-slot";
+  slot.innerHTML = `<div class="video-slot-bar"></div><div class="video-slot-frame"></div>`;
+  after.after(slot);
+  positionPlayer();
+  if (animate) slideVideo(slot, false);
+}
+
+document.addEventListener("click", (event) => {
+  const link = event.target.closest("a[data-video-key]");
+  if (!link || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey) return;
+  const src = embedUrl(link.href);
+  if (!src) return;  // not YouTube: let it open in a new tab as before
+  event.preventDefault();
+  if (link.dataset.videoKey === openVideoKey) { closeVideo(true); return; }
+  document.querySelector("a.playing")?.classList.remove("playing");
+  openVideoKey = link.dataset.videoKey;
+  playerFrame.src = src;
+  player.querySelector(".video-external").href = link.href;
+  player.hidden = false;
+  placeVideo(true);
+});
+player.querySelector(".video-close").addEventListener("click", () => closeVideo(true));
+new ResizeObserver(positionPlayer).observe(document.body);
+addEventListener("resize", positionPlayer);
 
 // Per slot: keys of items already collected when that slot was first shown.
 // Anything collected later counts as new until the row is hovered or focused.
@@ -116,7 +222,7 @@ function renderChecklist(listEl, rows, { tag, videos, group = listEl.id } = {}) 
     li.innerHTML = `<span class="mark ${mark}" role="img" aria-label="${MARK_LABELS[mark]}"></span>` +
                     `<span class="item-name">${esc(row.name || "(unnamed)")}</span>` +
                     tagHtml +
-                    (videos ? videoLink(row.video, true) : "");
+                    (videos ? videoLink(row.video, true, `${group}:${row.name}`) : "");
     if (row.collected === true) markNew(li, `${group}:${row.name}`);
     listEl.appendChild(li);
   }
@@ -179,7 +285,7 @@ function renderQuantities(textsEl, listEl, quantities) {
     const pct = info.target > 0 ? Math.min(100, (info.have / info.target) * 100) : 0;
     const li = document.createElement("li");
     li.innerHTML = `
-      <div class="bar-label"><span class="item-name">${esc(name)}</span><span class="qty">${info.have} / ${info.target}</span>${videoLink(info.video, true)}</div>
+      <div class="bar-label"><span class="item-name">${esc(name)}</span><span class="qty">${info.have} / ${info.target}</span>${videoLink(info.video, true, `qty:${name}`)}</div>
       <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
     `;
     listEl.appendChild(li);
@@ -217,7 +323,7 @@ function renderBossCards(listEl, bosses) {
       ? `<input type="checkbox" id="${esc(checkboxId)}" ${boss.defeated ? "checked" : ""}>`
       : `<span class="mark ${mark}" role="img" aria-label="${BOSS_MARK_LABELS[mark]}"></span>`;
     const title = boss.manual ? `<label for="${esc(checkboxId)}">${esc(boss.name)}</label>` : esc(boss.name);
-    li.innerHTML = `<div class="boss-top">${status}${videoLink(boss.video, false)}</div>` +
+    li.innerHTML = `<div class="boss-top">${status}${videoLink(boss.video, false, `boss:${boss.id}`)}</div>` +
                    `<h3>${title}</h3>` +
                    `<span class="region-tag">${esc(boss.region)}</span>` +
                    (boss.manual
@@ -352,6 +458,11 @@ function renderSettings(slots) {
 }
 
 function renderAll() {
+  renderView();
+  placeVideo();
+}
+
+function renderView() {
   if (!lastData) return;
   const slots = lastData.slots || {};
   const ids = Object.keys(slots);
@@ -455,7 +566,7 @@ async function loadEndings() {
       ? `<span class="count done">Complete</span>`
       : `<span class="count">${doneCount} / ${ending.requirements.length}</span>`;
     const guide = ending.video && ending.video.startsWith("https://")
-      ? `<a class="guide" href="${esc(ending.video)}" target="_blank" rel="noopener">${PLAY_ICON}Watch the ending guide</a>`
+      ? `<a class="guide" href="${esc(ending.video)}" target="_blank" rel="noopener" data-video-key="${esc(`ending:${ending.name}`)}">${PLAY_ICON}Watch the ending guide</a>`
       : "";
     block.innerHTML = `<h3><span>${esc(ending.name)}</span>${progress}</h3>${guide}`;
 
@@ -476,6 +587,7 @@ async function loadEndings() {
     container.appendChild(block);
   }
   renderTotal("endings", completeCount, data.endings.length);
+  placeVideo();
 }
 
 refreshState();

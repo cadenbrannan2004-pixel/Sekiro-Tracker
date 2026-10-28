@@ -387,6 +387,62 @@ h2 { margin: 0; font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
 .video svg { width: 12px; height: 12px; fill: currentColor; }
 .video:hover, .video:focus-visible { background: var(--accent); color: var(--on-accent); }
 .video.placeholder { visibility: hidden; }
+.video.playing { background: var(--accent); color: var(--on-accent); }
+.video svg, .guide svg { transition: transform 150ms ease-out; }
+.video.playing svg, .guide.playing svg { transform: rotate(90deg); }
+
+/* Inline video: an empty slot pushes the rows down and the player sits over it */
+.video-slot,
+.checklist li.video-slot,
+.bars li.video-slot {
+  display: block;
+  width: 100%;
+  max-width: 640px;
+  min-height: 0;
+  margin: 6px 0 12px;
+  padding: 0;
+  border: 0;
+  background: none;
+  animation: none;
+}
+.video-slot-bar { height: 30px; }
+.video-slot-frame { aspect-ratio: 16 / 9; }
+
+#video-player {
+  position: absolute;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+#video-player[hidden] { display: none; }
+#video-player iframe { flex: 1; width: 100%; border: 0; background: #000; }
+.video-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 30px;
+  padding: 0 4px 0 10px;
+  font-size: 12px;
+}
+.video-external { text-decoration: none; }
+.video-external:hover { text-decoration: underline; }
+.video-close {
+  width: 24px;
+  height: 24px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--dim);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+.video-close:hover { background: var(--accent); color: var(--on-accent); }
 
 /* Status marks: filled pink check = collected, ring = not yet, dashed = flag not mapped */
 .check-icon, .mark.yes::after, .ending input[type="checkbox"]:checked::after, .boss-card input[type="checkbox"]:checked::after {
