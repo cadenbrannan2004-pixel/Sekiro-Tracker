@@ -1,11 +1,3 @@
-"""
-save_reader.py
-
-Handles locating and loading the Sekiro PC save file, and extracting a
-single character slot's raw bytes. Slot layout (BND container) confirmed
-from alfizari/Sekiro-Save-Editor:
-
-"""
 
 import os
 import struct

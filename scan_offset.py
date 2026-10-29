@@ -2,6 +2,7 @@
 scan_offset.py
 
 Not written by me but ai as a tool to find the offset of the prayer bead table in Sekiro save files. 
+
 It scans a full slot for known prayer bead flags and can also compare two snapshots to find where a specific flag flipped from 0 to 1.
 """
 

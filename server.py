@@ -1,25 +1,10 @@
-"""
-server.py
-
-Local web frontend for the Sekiro tracker.
-
-Serves achievement_state.json (written on a loop by tracker.py) as JSON
-over HTTP with account-wide boss achievements from Steam's local cache
-added, and persists a manual ending checklist to ending_state.json, manual
-boss checks (per Steam account) to boss_state.json and custom save slot
-names to slot_names.json.
-
-Run alongside tracker.py:
-    uv run tracker.py       # in one terminal
-    uv run server.py        # in another
-Then open http://127.0.0.1:5000
-"""
 
 import json
 from pathlib import Path
 
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, Response, jsonify, request, send_from_directory
 
+import app_settings
 from boss_map import MANUAL_IDS, get_account_bosses
 from endings import ENDINGS
 from save_reader import default_save_path, save_owner_steam_id64
@@ -50,7 +35,37 @@ def _save_json(path: Path, data) -> None:
 
 @app.route("/")
 def index():
-    return send_from_directory(WEB_DIR, "index.html")
+    # Settings go on the <html> tag so the saved theme applies before first paint.
+    # They live in a file, not localStorage, because the exe gets a new port (origin) every launch.
+    attrs = app_settings.html_attrs(app_settings.load())
+    page = (WEB_DIR / "index.html").read_text(encoding="utf-8")
+    page = page.replace('<html lang="en">', f'<html lang="en"{attrs}>', 1)
+    return Response(page, mimetype="text/html")
+
+
+# Only the save file location, since everything else is already on the <html> tag
+@app.route("/api/settings", methods=["GET"])
+def api_settings_get():
+    detected = default_save_path()
+    return jsonify({
+        "savePath": app_settings.load().get("savePath", ""),
+        "detectedSavePath": str(detected) if detected else "",
+    })
+
+
+@app.route("/api/settings", methods=["POST"])
+def api_settings_post():
+    payload = request.get_json(force=True, silent=True) or {}
+    error = app_settings.update(payload)
+    if error:
+        return jsonify({"error": error}), 400
+    return jsonify({"ok": True})
+
+
+@app.route("/api/settings/reset", methods=["POST"])
+def api_settings_reset():
+    app_settings.reset()
+    return jsonify({"ok": True})
 
 
 @app.route("/<path:filename>")
@@ -60,7 +75,7 @@ def static_files(filename):
 
 def _current_account() -> str | None:
     """steamid64 (as a string) of the account whose save is being tracked."""
-    save_path = default_save_path()
+    save_path = app_settings.save_path()
     steam_id = save_owner_steam_id64(save_path) if save_path else None
     return None if steam_id is None else str(steam_id)
 

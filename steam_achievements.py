@@ -1,10 +1,4 @@
-"""
-steam_achievements.py
 
-Reads the account's Sekiro achievements from Steam's local stats cache, so
-progress counts every playthrough instead of only the current save.
-
-"""
 
 from __future__ import annotations
 

@@ -1,9 +1,3 @@
-"""
-SekiroApp.py
-
-Runs the save watcher (tracker.py) and the web dashboard (server.py) in one process, then opens the dashboard.
-
-"""
 
 import sys
 import threading
@@ -13,6 +7,7 @@ from pathlib import Path
 
 from werkzeug.serving import make_server
 
+import app_settings
 import server
 import tracker
 
@@ -25,6 +20,7 @@ if getattr(sys, "frozen", False):
     server.ENDING_STATE_PATH = data_dir / "ending_state.json"
     server.BOSS_STATE_PATH = data_dir / "boss_state.json"
     server.SLOT_NAMES_PATH = data_dir / "slot_names.json"
+    app_settings.SETTINGS_PATH = data_dir / "settings.json"
 
 
 def watch():
@@ -36,7 +32,8 @@ def watch():
 
 
 # Closing the tab sends /api/bye. A reload sends it too, so wait a few seconds
-# for the page to come back before shutting down.
+# for the page to come back before shutting down. The "Close the app when the
+# tab closes" setting turns this off, leaving the console window to quit with.
 BYE_GRACE_SECONDS = 5
 last_request = time.monotonic()
 said_bye = False
@@ -57,7 +54,8 @@ def bye():
 
 
 def close_when_tab_closes(httpd):
-    while not (said_bye and time.monotonic() - last_request > BYE_GRACE_SECONDS):
+    while not (said_bye and time.monotonic() - last_request > BYE_GRACE_SECONDS
+               and app_settings.load().get("autoClose") != "off"):
         time.sleep(1)
     print("Dashboard tab closed, shutting down.")
     httpd.shutdown()

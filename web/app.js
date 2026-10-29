@@ -1,4 +1,4 @@
-const POLL_INTERVAL_MS = 3000;
+const root = document.documentElement;
 
 // Bead regions show in this order; anything not listed goes after, in data order
 const REGION_ORDER = [
@@ -12,29 +12,101 @@ const statusEl = document.getElementById("status");
 
 const PLAY_ICON = `<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1.8v8.4L10 6z"/></svg>`;
 
-// Theme: follows the system until the toggle pins one (saved in localStorage)
-const themeBtn = document.getElementById("theme-toggle");
+// Saved to settings.json beside the app; server.py puts the values back on <html> on load
+function saveSetting(key, value) {
+  return fetch("/api/settings", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ [key]: value }),
+  }).catch(() => null);  // server gone; the choice still applies until reload
+}
+
+// A data-* value from <html>, or the fallback when it was never set
+const setting = (key, fallback) => root.dataset[key] ?? fallback;
+
+// Switches and dropdowns marked data-setting: switches store "on"/"off", dropdowns their value.
+// CSS reads most of these straight off <html>; the rest re-render below.
+for (const input of document.querySelectorAll("[data-setting]")) {
+  const key = input.dataset.setting;
+  const current = setting(key, input.dataset.default);
+  if (input.type === "checkbox") input.checked = current === "on";
+  else input.value = current;
+  input.addEventListener("change", () => {
+    const value = input.type === "checkbox" ? (input.checked ? "on" : "off") : input.value;
+    root.dataset[key] = value;
+    saveSetting(key, value);
+    if (key === "refresh") startPolling();
+    if (key === "newHighlight" || key === "hideCollected") renderAll();
+  });
+}
+
+// Section switches: on = shown. Hidden ones are a space-separated list CSS matches with ~=
+const sectionToggles = [...document.querySelectorAll("[data-section-toggle]")];
+const hiddenSections = (root.dataset.hiddenSections || "").split(" ");
+for (const input of sectionToggles) {
+  input.checked = !hiddenSections.includes(input.dataset.sectionToggle);
+  input.addEventListener("change", () => {
+    const hidden = sectionToggles.filter((i) => !i.checked).map((i) => i.dataset.sectionToggle);
+    root.dataset.hiddenSections = hidden.join(" ");
+    saveSetting("hiddenSections", hidden);
+    placeVideo();  // closes the player if its section was just hidden
+  });
+}
+
+// Save file location: blank = auto-detect, which shows as the placeholder
+const pathInput = document.getElementById("save-path");
+const pathMessage = document.getElementById("save-path-message");
+
+function showPathMessage(text, cls) {
+  pathMessage.textContent = text;
+  pathMessage.className = `path-message ${cls || ""}`;
+}
+
+fetch("/api/settings").then((res) => res.json()).then((info) => {
+  pathInput.value = info.savePath;
+  pathInput.placeholder = info.detectedSavePath || "No save found automatically";
+}).catch(() => {});
+
+document.getElementById("save-path-form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const res = await saveSetting("savePath", pathInput.value);
+  if (!res) { showPathMessage("Server unreachable", "error"); return; }
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) { showPathMessage(body.error || `error ${res.status}`, "error"); return; }
+  pathInput.value = pathInput.value.trim().replace(/^"|"$/g, "");
+  showPathMessage(pathInput.value ? "Saved. Switching to this file…" : "Saved. Finding your save automatically…", "ok");
+  setTimeout(refreshState, 1500);  // the tracker picks it up on its next check
+});
+
+document.getElementById("reset-settings").addEventListener("click", async () => {
+  if (!confirm("Reset all settings to their defaults? Save names and checklists are kept.")) return;
+  await fetch("/api/settings/reset", { method: "POST" }).catch(() => {});
+  location.reload();
+});
+
+// Theme: follows the system until the settings switch pins one
+const themeSwitch = document.getElementById("theme-toggle");
 const darkQuery = matchMedia("(prefers-color-scheme: dark)");
 
 function isDark() {
-  const pinned = document.documentElement.dataset.theme;
+  const pinned = root.dataset.theme;
   return pinned ? pinned === "dark" : darkQuery.matches;
 }
 
-function syncThemeButton() {
+function syncThemeSwitch() {
   const dark = isDark();
-  document.documentElement.classList.toggle("dark", dark);
-  themeBtn.setAttribute("aria-label", dark ? "Switch to light theme" : "Switch to dark theme");
+  root.classList.toggle("dark", dark);
+  themeSwitch.checked = dark;
 }
 
-themeBtn.addEventListener("click", () => {
-  const next = isDark() ? "light" : "dark";
-  document.documentElement.dataset.theme = next;
-  try { localStorage.setItem("theme", next); } catch (e) { /* storage unavailable */ }
-  syncThemeButton();
+themeSwitch.addEventListener("change", () => {
+  const next = themeSwitch.checked ? "dark" : "light";
+  root.dataset.theme = next;
+  saveSetting("theme", next);
+  syncThemeSwitch();
 });
-darkQuery.addEventListener("change", syncThemeButton);
-syncThemeButton();
+darkQuery.addEventListener("change", syncThemeSwitch);
+syncThemeSwitch();
 
 // Backdrop: the user's background.gif if present, otherwise a few drawn petals
 const PETAL_COUNT = 10;
@@ -178,6 +250,7 @@ function placeVideo(animate = false) {
 document.addEventListener("click", (event) => {
   const link = event.target.closest("a[data-video-key]");
   if (!link || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey) return;
+  if (setting("videos", "inline") === "youtube") return;  // the link's own new-tab behaviour
   const src = embedUrl(link.href);
   if (!src) return;  // not YouTube: let it open in a new tab as before
   event.preventDefault();
@@ -194,21 +267,35 @@ new ResizeObserver(positionPlayer).observe(document.body);
 addEventListener("resize", positionPlayer);
 
 // Per slot: keys of items already collected when that slot was first shown.
-// Anything collected later counts as new until the row is hovered or focused.
+// Anything collected later counts as new until the row is hovered or focused,
+// or until the timed highlight setting runs out.
 const seenBySlot = {};
 let seen = null;
 let firstLook = false;
+const newSince = {};  // "slot:key" -> when it first showed as new
+const HIGHLIGHT_MS = { "1m": 60_000, "5m": 300_000 };
 
 function markNew(li, key) {
-  if (firstLook) { seen.add(key); return; }
+  const mode = setting("newHighlight", "seen");
+  if (firstLook || mode === "off") { seen.add(key); return; }
   if (seen.has(key)) return;
+  const since = newSince[`${selectedSlot}:${key}`] ??= Date.now();
+  if (Date.now() - since > HIGHLIGHT_MS[mode]) { seen.add(key); return; }  // undefined limit -> false
   li.classList.add("new");
   const clear = () => { seen.add(key); li.classList.replace("new", "just-seen"); };
   li.addEventListener("pointerenter", clear, { once: true });
   li.addEventListener("focusin", clear, { once: true });
 }
 
-// rows: [{name, collected, region?, source?, video?}] -- collected null = flag not mapped yet
+// Small meter for a prosthetic tool's Sculptor upgrades
+function upgradeMeter({ have, total }) {
+  const pct = total ? (have / total) * 100 : 0;
+  return `<span class="upgrade${have === total ? " done" : ""}" title="${have} of ${total} upgrades">` +
+         `<span class="upgrade-track"><span class="upgrade-fill" style="width:${pct}%"></span></span>` +
+         `<span class="upgrade-count">${have}/${total}</span></span>`;
+}
+
+// rows: [{name, collected, region?, source?, video?, upgrades?}] -- collected null = flag not mapped yet
 // tag: "source" shows BOSS/CHEST/..., "region" shows the area name on the right
 function renderChecklist(listEl, rows, { tag, videos, group = listEl.id } = {}) {
   listEl.innerHTML = "";
@@ -216,12 +303,15 @@ function renderChecklist(listEl, rows, { tag, videos, group = listEl.id } = {}) 
     const li = document.createElement("li");
     const mark = markFor(row.collected);
     li.className = mark;
+    // Owned but not fully upgraded still counts as something to do for "Hide collected items"
+    if (row.upgrades && row.upgrades.have < row.upgrades.total) li.classList.add("upgrading");
     let tagHtml = "";
     if (tag === "source" && row.source) tagHtml = `<span class="source">${esc(row.source)}</span>`;
     if (tag === "region" && row.region) tagHtml = `<span class="region-tag">${esc(row.region)}</span>`;
     li.innerHTML = `<span class="mark ${mark}" role="img" aria-label="${MARK_LABELS[mark]}"></span>` +
                     `<span class="item-name">${esc(row.name || "(unnamed)")}</span>` +
                     tagHtml +
+                    (row.upgrades ? upgradeMeter(row.upgrades) : "") +
                     (videos ? videoLink(row.video, true, `${group}:${row.name}`) : "");
     if (row.collected === true) markNew(li, `${group}:${row.name}`);
     listEl.appendChild(li);
@@ -265,6 +355,7 @@ function renderRegions(container, beads) {
     block.innerHTML = `<h3><span>${esc(region)}</span><span class="count"></span></h3><ul class="checklist"></ul>`;
     const regionDone = renderChecklist(block.querySelector("ul"), rows, { tag: "source", videos: true, group: `beads:${region}` });
     block.querySelector(".count").textContent = countText(regionDone, rows);
+    block.classList.toggle("complete", regionDone === rows.length);  // hidden by "Hide collected items"
     done += regionDone;
     container.appendChild(block);
   }
@@ -272,13 +363,17 @@ function renderRegions(container, beads) {
 }
 
 // Checkbox targets (the esoteric texts) render as collected/not-yet rows;
-// counted ones (Lapis Lazuli, Treasure Carp Scale) keep progress bars below them
-function renderQuantities(textsEl, listEl, quantities) {
+// counted ones (Lapis Lazuli, Treasure Carp Scale) keep progress bars below them,
+// and the ninjutsu get their own list under those
+function renderQuantities(textsEl, listEl, ninjutsuEl, quantities) {
   const entries = Object.entries(quantities);
-  const textRows = entries
-    .filter(([, info]) => info.checkbox)
+  const checkRows = (group) => entries
+    .filter(([, info]) => info.checkbox && (info.group || "") === group)
     .map(([name, info]) => ({ name, collected: info.complete, video: info.video }));
-  renderChecklist(textsEl, textRows, { videos: true });
+  renderChecklist(textsEl, checkRows(""), { videos: true });
+  const ninjutsuRows = checkRows("ninjutsu");
+  const ninjutsu = renderChecklist(ninjutsuEl, ninjutsuRows, { videos: true });
+  document.getElementById("ninjutsu-count").textContent = countText(ninjutsu, ninjutsuRows);
 
   listEl.innerHTML = "";
   for (const [name, info] of entries.filter(([, info]) => !info.checkbox)) {
@@ -366,10 +461,8 @@ for (const btn of document.querySelectorAll(".scroll-btn")) {
   });
 }
 
-let selectedSlot = null;
+let selectedSlot = root.dataset.selectedSlot ?? null;
 let lastData = null;
-
-try { selectedSlot = localStorage.getItem("selectedSlot"); } catch (e) { /* storage unavailable */ }
 
 function ngLabel(entry) {
   const ng = entry.stats && entry.stats.ng_plus;
@@ -395,7 +488,7 @@ function renderTabs(slots) {
     btn.addEventListener("click", () => {
       selectedSlot = id;
       showingSettings = false;
-      try { localStorage.setItem("selectedSlot", id); } catch (e) { /* ignore */ }
+      saveSetting("selectedSlot", id);
       renderAll();
     });
     nav.appendChild(btn);
@@ -494,14 +587,19 @@ function renderView() {
   renderTotal("gourds", gourds, gourdRows.length);
 
   const toolVideos = report.prosthetic_tools.videos || {};
+  const toolUpgrades = report.prosthetic_tools.upgrades || {};  // missing until the tracker re-reads the save
   const toolRows = Object.entries(report.prosthetic_tools.owned)
-    .map(([name, collected]) => ({ name, collected, video: toolVideos[name] }));
+    .map(([name, collected]) => ({ name, collected, video: toolVideos[name], upgrades: toolUpgrades[name] }));
   const tools = renderChecklist(document.getElementById("tools-list"), toolRows, { videos: true });
-  document.getElementById("tools-count").textContent = countText(tools, toolRows);
+  const upgradeTotals = Object.values(toolUpgrades);
+  const upgradesDone = upgradeTotals.reduce((sum, u) => sum + u.have, 0);
+  const upgradesMax = upgradeTotals.reduce((sum, u) => sum + u.total, 0);
+  document.getElementById("tools-count").textContent = countText(tools, toolRows) +
+    (upgradesMax ? ` · ${upgradesDone} / ${upgradesMax} upgrades` : "");
   renderTotal("tools", tools, toolRows.length);
 
   renderQuantities(document.getElementById("texts-list"), document.getElementById("quantities-list"),
-                   report.quantity_targets);
+                   document.getElementById("ninjutsu-list"), report.quantity_targets);
 
   renderBosses(lastData.bosses || {});
 }
@@ -590,9 +688,16 @@ async function loadEndings() {
   placeVideo();
 }
 
+// Restarted when the refresh setting changes
+let pollTimer = null;
+function startPolling() {
+  clearInterval(pollTimer);
+  pollTimer = setInterval(refreshState, Number(setting("refresh", "3")) * 1000);
+}
+
 refreshState();
 loadEndings();
-setInterval(refreshState, POLL_INTERVAL_MS);
+startPolling();
 setInterval(renderConnected, 1000);  // keeps "updated Xs ago" ticking between polls
 
 // Lets SekiroApp.py shut down when this tab closes (404/405 under plain server.py, harmless)

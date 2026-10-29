@@ -12,6 +12,7 @@ achievement_state.json
 ending_state.json
 boss_state.json
 slot_names.json
+settings.json
 # PyInstaller
 build/
 dist/

@@ -1,7 +1,3 @@
-"""
-event_flags.py
-
-"""
 
 from __future__ import annotations
 

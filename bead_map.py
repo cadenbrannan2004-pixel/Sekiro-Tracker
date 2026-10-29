@@ -1,9 +1,3 @@
-"""
-bead_map.py
-
-Prayer Bead pickup locations
-
-"""
 
 from dataclasses import dataclass
 
