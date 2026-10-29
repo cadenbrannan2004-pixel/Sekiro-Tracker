@@ -1,9 +1,3 @@
-"""
-achievements.py
-
-Combines every tracked achievement category into one report. This is
-what tracker.py should call instead of talking to bead_map directly.
-"""
 
 from bead_map import get_bead_state
 from gourd_map import get_gourd_state

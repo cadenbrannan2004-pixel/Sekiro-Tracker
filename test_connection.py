@@ -1,13 +1,3 @@
-"""
-test_connection.py
-
-Run this ONCE, manually, to confirm the tracker can read your save file and parse some basic stats.
-
-    uv run test_connection.py
-
-This does NOT modify anything, pure read-only sanity check. Safe to
-run with the game open or closed.
-"""
 
 from save_reader import default_save_path, read_save_file, extract_slot, find_active_slots
 from stats_reader import read_stats

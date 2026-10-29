@@ -1,20 +1,3 @@
-"""
-server.py
-
-Local web frontend for the Sekiro tracker.
-
-Serves achievement_state.json (written on a loop by tracker.py) as JSON
-over HTTP with account-wide boss achievements from Steam's local cache
-added, and persists a manual ending checklist to ending_state.json, manual
-boss checks (per Steam account) to boss_state.json, custom save slot
-names to slot_names.json and dashboard preferences to settings.json
-(see app_settings.py).
-
-Run alongside tracker.py:
-    uv run tracker.py       # in one terminal
-    uv run server.py        # in another
-Then open http://127.0.0.1:5000
-"""
 
 import json
 from pathlib import Path

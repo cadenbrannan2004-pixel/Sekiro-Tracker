@@ -1,9 +1,3 @@
-"""
-app_settings.py
-
-Dashboard preferences kept in settings.json. server.py serves and saves them;
-tracker.py reads the save file location and refresh rate from here too.
-"""
 
 import html
 import json

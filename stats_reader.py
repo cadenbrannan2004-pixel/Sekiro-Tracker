@@ -1,10 +1,3 @@
-"""
-stats_reader.py
-
-Minimal scalar stat reads, ported from alfizari's confirmed offsets.
-Not needed for achievement tracking itself, used to eyeball-check against
-real save data
-"""
 
 import struct
 

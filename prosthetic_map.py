@@ -1,14 +1,3 @@
-"""
-prosthetic_map.py
-
-Base prosthetic tools. IDs confirmed from alfizari's weapons.json.
-
-Each Sculptor upgrade adds a new item_id of base + 100, + 200, ... and the
-earlier versions stay in the inventory, so counting the owned variant ids
-gives the upgrade progress. Upgrade counts confirmed against a fully
-upgraded save (40 tool versions in all).
-
-"""
 
 from dataclasses import dataclass
 

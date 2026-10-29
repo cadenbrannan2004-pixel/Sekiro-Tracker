@@ -1,10 +1,3 @@
-"""
-tracker.py
-
-Automatic loop: watches the save file for changes, re-parses the active
-slot, and writes each slot to a tracked state on one JSON file. This needs to 
-run in the background while you play.
-"""
 
 import json
 import os

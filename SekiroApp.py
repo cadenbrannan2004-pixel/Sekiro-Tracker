@@ -1,9 +1,3 @@
-"""
-SekiroApp.py
-
-Runs the save watcher (tracker.py) and the web dashboard (server.py) in one process, then opens the dashboard.
-
-"""
 
 import sys
 import threading

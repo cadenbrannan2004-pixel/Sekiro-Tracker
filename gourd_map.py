@@ -1,9 +1,3 @@
-"""
-gourd_map.py
-
-Gourd Seed pickup locations
-
-"""
 
 from bead_map import BOSS, CHEST, PICKUP, SHOP, BeadLocation as GourdLocation
 from event_flags import flag_state

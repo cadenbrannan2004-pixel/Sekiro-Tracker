@@ -1,13 +1,3 @@
-"""
-boss_map.py
-
-Bosses for the "Man Without Equal" achievement, plus
-the hidden boss achievements that aren't part of it.
-
-Progress is account-wide: a boss with a Steam achievement counts once it's
-unlocked on the Steam account. Steam holds nothing for bosses without one,
-so those are a manual checkbox saved per account in boss_state.json.
-"""
 
 from dataclasses import dataclass
 
