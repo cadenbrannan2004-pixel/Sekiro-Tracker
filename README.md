@@ -21,6 +21,8 @@ Sekiro doesn't have a built-in completion tracker, and many collectibles (like P
 3. Double-click `SekiroTracker.exe`. A small console window opens, then your dashboard opens in your browser.
 4. Play the game. The dashboard updates every time Sekiro saves (resting at an idol, picking things up, quitting to the menu).
 **To close it:** close the dashboard tab (the tracker shuts down a few seconds later), or close the console window.
+
+*Please make a folder for this exe so when it is ran the json files written will stay together with the application*
  
 ### "Windows protected your PC"
  
