@@ -90,6 +90,12 @@ def get_good_quantity(slot_data: bytes, item_id: int) -> int:
     return total
 
 
+def owned_weapon_ids(slot_data: bytes) -> set[int]:
+    """Every weapon-type item_id in carried inventory, for checking many at once."""
+    return {record.clean_item_id for record in parse_inventory(slot_data)
+            if record.type_bits == ITEM_TYPE_WEAPON}
+
+
 def owns_weapon(slot_data: bytes, item_id: int) -> bool:
     """Whether a weapon-type item (includes prosthetic tools) with this
     item_id exists in carried inventory. Prosthetic tools aren't storable,

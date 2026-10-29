@@ -4,14 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Sekiro Tracker</title>
-  <script>
-    // Apply the saved theme before first paint so the page never flashes wrong one
-    try { const t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
-  </script>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  
+  <!-- Section icons, drawn once and reused with <use href="#icon-..."> -->
+  <svg class="icon-sprite" aria-hidden="true">
+    <symbol id="icon-bosses" viewBox="0 0 24 24"><path d="M4 4l16 16M20 4 4 20M14 18l4-4M6 14l4 4"/></symbol>
+    <symbol id="icon-beads" viewBox="0 0 24 24"><circle cx="20" cy="5" r="1.6"/><circle cx="18.9" cy="9" r="1.6"/><circle cx="16" cy="11.9" r="1.6"/><circle cx="12" cy="13" r="1.6"/><circle cx="8" cy="11.9" r="1.6"/><circle cx="5.1" cy="9" r="1.6"/><circle cx="4" cy="5" r="1.6"/><path d="M12 14.6v3.4M10.5 22l1.5-4 1.5 4"/></symbol>
+    <symbol id="icon-gourds" viewBox="0 0 24 24"><circle cx="12" cy="7.5" r="3.5"/><circle cx="12" cy="16" r="5.5"/><path d="M12 4V2M12 2h2"/></symbol>
+    <symbol id="icon-tools" viewBox="0 0 24 24"><path d="M12 3l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/><circle cx="12" cy="12" r="1.5"/></symbol>
+    <symbol id="icon-materials" viewBox="0 0 24 24"><path d="M3 4h18M3 20h18"/><rect x="5" y="4" width="14" height="16" rx="1"/><path d="M8.5 9h7M8.5 12h7M8.5 15h4"/></symbol>
+    <symbol id="icon-ninjutsu" viewBox="0 0 24 24"><path d="M12 3c2 3 5.5 5 5.5 9.5a5.5 5.5 0 0 1-11 0c0-2.2 1-3.8 2.2-4.8 0 2 1 3.3 2.3 3.3 0-3-1.2-5.2 1-8z"/></symbol>
+    <symbol id="icon-endings" viewBox="0 0 24 24"><path d="M2.5 5h19M5 9.5h14M7 5v16M17 5v16M12 5v4.5"/></symbol>
+  </svg>
+
   <div id="backdrop" class="backdrop" aria-hidden="true"></div>
 
   <div class="page">
@@ -21,10 +27,6 @@
         <p class="subtitle">Prayer beads, gourd seeds, prosthetics, materials, bosses and endings, read live from your save.</p>
         <span id="status" class="status">Connecting…</span>
       </div>
-      <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Switch to dark theme">
-        <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg>
-        <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
-      </button>
       <!-- Optional: drop banner.png into the web folder -->
       <img class="banner-art" src="cherryblossombanner.png" alt="" onerror="this.remove()">
     </header>
@@ -39,44 +41,127 @@
 
     <section id="settings-view" class="panel settings" hidden>
       <div class="panel-head">
+        <h2>Appearance</h2>
+      </div>
+      <label class="switch-row">
+        <span>Dark mode</span>
+        <input id="theme-toggle" class="switch" type="checkbox" role="switch">
+      </label>
+      <label class="switch-row">
+        <span>Sakura petals</span>
+        <input class="switch" type="checkbox" role="switch" data-setting="petals" data-default="on">
+      </label>
+      <label class="switch-row">
+        <span>Banner image</span>
+        <input class="switch" type="checkbox" role="switch" data-setting="banner" data-default="on">
+      </label>
+
+      <div class="panel-head sub-head">
+        <h2>Tracking</h2>
+      </div>
+      <label class="switch-row">
+        <span>Hide collected items<small>Show only what's still missing. Endings and bosses you check yourself stay visible.</small></span>
+        <input class="switch" type="checkbox" role="switch" data-setting="hideCollected" data-default="off">
+      </label>
+      <label class="switch-row">
+        <span>"New this session" highlight</span>
+        <select class="setting-select" data-setting="newHighlight" data-default="seen">
+          <option value="seen">Until hovered</option>
+          <option value="1m">For 1 minute</option>
+          <option value="5m">For 5 minutes</option>
+          <option value="off">Off</option>
+        </select>
+      </label>
+      <label class="switch-row">
+        <span>Check the save every<small>Slower uses less CPU while the game runs</small></span>
+        <select class="setting-select" data-setting="refresh" data-default="3">
+          <option value="1">1 second</option>
+          <option value="3">3 seconds</option>
+          <option value="5">5 seconds</option>
+          <option value="10">10 seconds</option>
+        </select>
+      </label>
+
+      <div class="panel-head sub-head">
+        <h2>Sections</h2>
+      </div>
+      <label class="switch-row"><span>Bosses</span><input class="switch" type="checkbox" role="switch" data-section-toggle="bosses"></label>
+      <label class="switch-row"><span>Prayer Beads</span><input class="switch" type="checkbox" role="switch" data-section-toggle="beads"></label>
+      <label class="switch-row"><span>Gourd Seeds</span><input class="switch" type="checkbox" role="switch" data-section-toggle="gourds"></label>
+      <label class="switch-row"><span>Prosthetic Tools</span><input class="switch" type="checkbox" role="switch" data-section-toggle="tools"></label>
+      <label class="switch-row"><span>Materials &amp; Texts</span><input class="switch" type="checkbox" role="switch" data-section-toggle="materials"></label>
+      <label class="switch-row"><span>Endings</span><input class="switch" type="checkbox" role="switch" data-section-toggle="endings"></label>
+
+      <div class="panel-head sub-head">
+        <h2>Videos &amp; App</h2>
+      </div>
+      <label class="switch-row">
+        <span>Play video guides</span>
+        <select class="setting-select" data-setting="videos" data-default="inline">
+          <option value="inline">In the page</option>
+          <option value="youtube">On YouTube, in a new tab</option>
+        </select>
+      </label>
+      <label class="switch-row">
+        <span>Close the app when this tab closes<small>When off, close the console window to quit</small></span>
+        <input class="switch" type="checkbox" role="switch" data-setting="autoClose" data-default="on">
+      </label>
+
+      <div class="panel-head sub-head">
+        <h2>Save File</h2>
+      </div>
+      <p class="panel-note">Leave blank to find your save automatically. Paste a full path to track a different S0000.sl2, such as another Steam account's or a backup.</p>
+      <form id="save-path-form" class="path-row">
+        <input id="save-path" type="text" autocomplete="off" spellcheck="false" aria-label="Save file location">
+        <button type="submit" class="button">Save</button>
+      </form>
+      <p id="save-path-message" class="path-message" aria-live="polite"></p>
+
+      <div class="panel-head sub-head">
         <h2>Save Names</h2>
       </div>
       <p class="panel-note">Give each save its own name. A name stays until that save is deleted in game. Leave a field blank to go back to "Slot N".</p>
       <ul id="slot-names" class="name-list"></ul>
+
+      <div class="panel-head sub-head">
+        <h2>Reset</h2>
+      </div>
+      <p class="panel-note">Puts every setting on this page back to its default. Save names and checklists are kept.</p>
+      <button id="reset-settings" type="button" class="button danger">Reset all settings</button>
     </section>
 
     <div id="tracker-view">
     <section class="summary" aria-label="Totals">
-      <div class="stat">
-        <span class="stat-label">Prayer Beads</span>
+      <div class="stat" data-section="beads">
+        <span class="stat-label"><svg class="section-icon" aria-hidden="true"><use href="#icon-beads"/></svg>Prayer Beads</span>
         <span id="beads-total" class="stat-value">–</span>
         <div class="bar-track"><div id="beads-bar" class="bar-fill"></div></div>
       </div>
-      <div class="stat">
-        <span class="stat-label">Gourd Seeds</span>
+      <div class="stat" data-section="gourds">
+        <span class="stat-label"><svg class="section-icon" aria-hidden="true"><use href="#icon-gourds"/></svg>Gourd Seeds</span>
         <span id="gourds-total" class="stat-value">–</span>
         <div class="bar-track"><div id="gourds-bar" class="bar-fill"></div></div>
       </div>
-      <div class="stat">
-        <span class="stat-label">Prosthetic Tools</span>
+      <div class="stat" data-section="tools">
+        <span class="stat-label"><svg class="section-icon" aria-hidden="true"><use href="#icon-tools"/></svg>Prosthetic Tools</span>
         <span id="tools-total" class="stat-value">–</span>
         <div class="bar-track"><div id="tools-bar" class="bar-fill"></div></div>
       </div>
-      <div class="stat">
-        <span class="stat-label">Endings</span>
+      <div class="stat" data-section="endings">
+        <span class="stat-label"><svg class="section-icon" aria-hidden="true"><use href="#icon-endings"/></svg>Endings</span>
         <span id="endings-total" class="stat-value">–</span>
         <div class="bar-track"><div id="endings-bar" class="bar-fill"></div></div>
       </div>
-      <div class="stat">
-        <span class="stat-label">Bosses</span>
+      <div class="stat" data-section="bosses">
+        <span class="stat-label"><svg class="section-icon" aria-hidden="true"><use href="#icon-bosses"/></svg>Bosses</span>
         <span id="bosses-total" class="stat-value">–</span>
         <div class="bar-track"><div id="bosses-bar" class="bar-fill"></div></div>
       </div>
     </section>
 
-    <section class="panel">
+    <section class="panel" data-section="bosses">
       <div class="panel-head">
-        <h2>Bosses · Man Without Equal</h2>
+        <h2><svg class="section-icon" aria-hidden="true"><use href="#icon-bosses"/></svg>Bosses · Man Without Equal</h2>
         <span id="bosses-count" class="count"></span>
       </div>
       <p class="panel-note">Read from the Steam account signed in on this PC. Steam has nothing for bosses without an achievement, so check those yourself.</p>
@@ -95,49 +180,54 @@
       </div>
     </section>
 
-    <section class="panel">
+    <section class="panel" data-section="beads">
       <div class="panel-head">
-        <h2>Prayer Beads</h2>
+        <h2><svg class="section-icon" aria-hidden="true"><use href="#icon-beads"/></svg>Prayer Beads</h2>
         <ul class="legend" aria-label="Legend">
           <li><span class="mark yes"></span>Collected</li>
           <li><span class="mark no"></span>Not yet</li>
           <li><span class="mark unknown"></span>Flag not mapped</li>
-          <li><span class="swatch-new"></span>New this session</li>
+          <li class="legend-new"><span class="swatch-new"></span>New this session</li>
         </ul>
       </div>
       <div id="beads-regions" class="regions"></div>
     </section>
 
     <div class="lower">
-      <section class="panel">
+      <section class="panel" data-section="gourds">
         <div class="panel-head">
-          <h2>Gourd Seeds</h2>
+          <h2><svg class="section-icon" aria-hidden="true"><use href="#icon-gourds"/></svg>Gourd Seeds</h2>
           <span id="gourds-count" class="count"></span>
         </div>
         <ul id="gourds-list" class="checklist"></ul>
       </section>
 
-      <section class="panel">
+      <section class="panel" data-section="tools">
         <div class="panel-head">
-          <h2>Prosthetic Tools</h2>
+          <h2><svg class="section-icon" aria-hidden="true"><use href="#icon-tools"/></svg>Prosthetic Tools</h2>
           <span id="tools-count" class="count"></span>
         </div>
-        <p class="panel-note">Tools are tracked once they're fitted to the Shinobi Prosthetic, not when first picked up.</p>
+        <p class="panel-note">Tools are tracked once they're fitted to the Shinobi Prosthetic, not when first picked up. The bar shows each tool's upgrades from the Sculptor.</p>
         <ul id="tools-list" class="checklist"></ul>
       </section>
 
-      <section class="panel">
+      <section class="panel" data-section="materials">
         <div class="panel-head">
-          <h2>Materials &amp; Texts</h2>
+          <h2><svg class="section-icon" aria-hidden="true"><use href="#icon-materials"/></svg>Materials &amp; Texts</h2>
         </div>
         <ul id="texts-list" class="checklist"></ul>
         <ul id="quantities-list" class="bars"></ul>
+        <div class="panel-head sub-head">
+          <h3><svg class="section-icon" aria-hidden="true"><use href="#icon-ninjutsu"/></svg>Ninjutsu</h3>
+          <span id="ninjutsu-count" class="count"></span>
+        </div>
+        <ul id="ninjutsu-list" class="checklist"></ul>
       </section>
     </div>
 
-    <section class="endings-section">
+    <section class="endings-section" data-section="endings">
       <div class="section-head">
-        <h2>Endings</h2>
+        <h2><svg class="section-icon" aria-hidden="true"><use href="#icon-endings"/></svg>Endings</h2>
         <span class="hint">Manual checklist so check each step yourself</span>
       </div>
       <div id="endings" class="endings"></div>
@@ -146,7 +236,7 @@
 
     <footer>
       <span>Read-only: this tool never writes to your save file.</span>
-      <span>Fan-made tool · not affiliated with FromSoftware or Activision</span>
+      <span>Fan-made tool, not affiliated with FromSoftware or Activision</span>
     </footer>
   </div>
 

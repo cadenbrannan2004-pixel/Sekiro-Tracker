@@ -17,6 +17,7 @@ class QuantityTarget:
     target: int  # how many you actually need for the relevant achievement/purchase
     checkbox: bool = False  # one-per-save items: show held/not-held instead of a bar
     video: str = ""  # YouTube links
+    group: str = ""  # "ninjutsu" lists it under its own heading below the materials
 
 
 QUANTITY_TARGETS: list[QuantityTarget] = [
@@ -28,6 +29,10 @@ QUANTITY_TARGETS: list[QuantityTarget] = [
     QuantityTarget("Ashina Esoteric Text", 2922, target = 1, checkbox=True, video="https://youtu.be/aH-lHErhCjI?si=OYdEv5QA1tCos6dK&t=98"),
     QuantityTarget("Senpou Esoteric Text", 2923, target = 1, checkbox=True, video="https://youtu.be/aH-lHErhCjI?si=3aZ83BOyqgvd2OcA&t=199"), 
     QuantityTarget("Mushin Esoteric Text", 2924, target = 1, checkbox=True, video="https://youtu.be/aH-lHErhCjI?si=xXiXrjFBS-XOPr_P&t=248"),
+    # Ninjutsu IDs from alfizari's goods.json
+    QuantityTarget("Bloodsmoke Ninjutsu", 2100, target = 1, checkbox=True, group="ninjutsu", video=""),
+    QuantityTarget("Puppeteer Ninjutsu", 2110, target = 1, checkbox=True, group="ninjutsu", video=""),
+    QuantityTarget("Bestowal Ninjutsu", 2120, target = 1, checkbox=True, group="ninjutsu", video=""),
 ]
 
 
@@ -41,5 +46,6 @@ def get_quantity_state(slot_data: bytes) -> dict[str, dict]:
             "complete": have >= item.target,
             "checkbox": item.checkbox,
             "video": item.video,
+            "group": item.group,
         }
     return result

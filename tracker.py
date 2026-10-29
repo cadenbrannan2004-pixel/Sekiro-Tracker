@@ -11,39 +11,49 @@ import os
 import time
 from pathlib import Path
 
-from save_reader import default_save_path, read_save_file, extract_slot, find_active_slots
+import app_settings
+from save_reader import read_save_file, extract_slot, find_active_slots
 from achievements import build_report
 from stats_reader import read_stats
 
 # Anchored to this file's folder so server.py finds it no matter where tracker.py is launched from
 OUTPUT_PATH = Path(__file__).parent / "achievement_state.json"
-POLL_INTERVAL_SECONDS = 3
 
 
 
 def run():
-    save_path = default_save_path()
-    if save_path is None:
-        raise SystemExit(
-            "Could not auto-locate S0000.sl2. Set the path manually in "
-            "save_reader.default_save_path() or pass it in directly."
-        )
-
-    print(f"Watching: {save_path}")
+    save_path = None
     last_mtime = None
 
     while True:
+        # Re-read every pass so a save location or refresh rate changed in Settings applies right away
+        interval = app_settings.refresh_seconds()
+        current = app_settings.save_path()
+        if current != save_path:
+            save_path, last_mtime = current, None
+            print(f"Watching: {save_path}" if save_path else
+                  "Could not auto-locate S0000.sl2. Set its location in the dashboard's Settings tab.")
+        if save_path is None:
+            time.sleep(interval)
+            continue
+
         try:
             mtime = save_path.stat().st_mtime
         except FileNotFoundError:
-            time.sleep(POLL_INTERVAL_SECONDS)
+            time.sleep(interval)
             continue
 
         if mtime != last_mtime:
             last_mtime = mtime
-            data = read_save_file(save_path)
+            try:
+                data = read_save_file(save_path)
+                active = find_active_slots(data)
+            except Exception as exc:  # e.g. a file picked in Settings that isn't a Sekiro save
+                print(f"Could not read {save_path}: {exc}")
+                time.sleep(interval)
+                continue
             slots = {}
-            for idx in find_active_slots(data):
+            for idx in active:
                 slot = extract_slot(data, idx)
                 try:
                     report = build_report(slot)
@@ -68,7 +78,7 @@ def run():
                       f"{complete} / {len(targets)} quantity targets complete")
 
         # Sleep every pass, not just when the save changed, so the loop doesn't spin at 100% CPU
-        time.sleep(POLL_INTERVAL_SECONDS)
+        time.sleep(interval)
 
 
 if __name__ == "__main__":

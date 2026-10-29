@@ -1,41 +1,59 @@
 """
 prosthetic_map.py
 
-Base prosthetic tools (the 8 core tools, ignoring their upgrade variants
-which are just alternate item_ids for the same tool once upgraded at the
-Sculptor). IDs confirmed from alfizari's weapons.json.
+Base prosthetic tools. IDs confirmed from alfizari's weapons.json.
+
+Each Sculptor upgrade adds a new item_id of base + 100, + 200, ... and the
+earlier versions stay in the inventory, so counting the owned variant ids
+gives the upgrade progress. Upgrade counts confirmed against a fully
+upgraded save (40 tool versions in all).
 
 """
 
 from dataclasses import dataclass
 
-from inventory_reader import owns_weapon
+from inventory_reader import owned_weapon_ids, owns_weapon
+
+UPGRADE_ID_STEP = 100
 
 
 @dataclass
 class ProstheticTool:
     name: str
     item_id: int
+    upgrades: int  # how many upgraded versions the Sculptor can make
     video: str = ""  # YouTube links
+
+    @property
+    def upgrade_ids(self) -> list[int]:
+        return [self.item_id + UPGRADE_ID_STEP * n for n in range(1, self.upgrades + 1)]
 
 
 PROSTHETIC_TOOLS: list[ProstheticTool] = [
-    ProstheticTool("Loaded Shuriken", 70000, video="https://youtu.be/1tH0061_VO4?si=hdUNu3CXnqtD060p&t=10"),
-    ProstheticTool("Shinobi Firecracker", 71000, video="https://youtu.be/1tH0061_VO4?si=mAs9WERq05_dzZ-o&t=103"),
-    ProstheticTool("Flame Vent", 72000, video="https://youtu.be/1tH0061_VO4?si=qBvbrElTUcUApAzI&t=175"),
-    ProstheticTool("Loaded Axe", 73000, video="https://youtu.be/1tH0061_VO4?si=ssc1lGzcv9EKqJ1w&t=225"),
-    ProstheticTool("Mist Raven", 74000, video="https://youtu.be/1tH0061_VO4?si=4oWmPPB2whKIcAK-&t=315"),
-    ProstheticTool("Sabimaru", 75000, video="https://youtu.be/1tH0061_VO4?si=5KyvS1C-CHax5BRp&t=582"),
-    ProstheticTool("Loaded Umbrella", 76000, video="https://youtu.be/1tH0061_VO4?si=s7f61rx-HtFOHLwJ&t=647"),
-    ProstheticTool("Divine Abduction", 77000, video="https://youtu.be/1tH0061_VO4?si=-UfGUqnFhxW02H7N&t=726"),
-    ProstheticTool("Loaded Spear", 78000, video="https://youtu.be/1tH0061_VO4?si=rj7BLp3-UZYPymHj&t=423"),
-    ProstheticTool("Finger Whistle", 79000, video="https://youtu.be/1tH0061_VO4?si=bd2ImzhXB0-nLGQv&t=789"),
-    
+    ProstheticTool("Loaded Shuriken", 70000, 5, video="https://youtu.be/1tH0061_VO4?si=hdUNu3CXnqtD060p&t=10"),
+    ProstheticTool("Shinobi Firecracker", 71000, 3, video="https://youtu.be/1tH0061_VO4?si=mAs9WERq05_dzZ-o&t=103"),
+    ProstheticTool("Flame Vent", 72000, 3, video="https://youtu.be/1tH0061_VO4?si=qBvbrElTUcUApAzI&t=175"),
+    ProstheticTool("Loaded Axe", 73000, 3, video="https://youtu.be/1tH0061_VO4?si=ssc1lGzcv9EKqJ1w&t=225"),
+    ProstheticTool("Mist Raven", 74000, 2, video="https://youtu.be/1tH0061_VO4?si=4oWmPPB2whKIcAK-&t=315"),
+    ProstheticTool("Sabimaru", 75000, 3, video="https://youtu.be/1tH0061_VO4?si=5KyvS1C-CHax5BRp&t=582"),
+    ProstheticTool("Loaded Umbrella", 76000, 3, video="https://youtu.be/1tH0061_VO4?si=s7f61rx-HtFOHLwJ&t=647"),
+    ProstheticTool("Divine Abduction", 77000, 2, video="https://youtu.be/1tH0061_VO4?si=-UfGUqnFhxW02H7N&t=726"),
+    ProstheticTool("Loaded Spear", 78000, 4, video="https://youtu.be/1tH0061_VO4?si=rj7BLp3-UZYPymHj&t=423"),
+    ProstheticTool("Finger Whistle", 79000, 2, video="https://youtu.be/1tH0061_VO4?si=bd2ImzhXB0-nLGQv&t=789"),
+
 ]
 
 
 def get_prosthetic_state(slot_data: bytes) -> dict[str, bool]:
     return {tool.name: owns_weapon(slot_data, tool.item_id) for tool in PROSTHETIC_TOOLS}
+
+
+def get_prosthetic_upgrades(slot_data: bytes) -> dict[str, dict]:
+    owned = owned_weapon_ids(slot_data)
+    return {
+        tool.name: {"have": sum(1 for i in tool.upgrade_ids if i in owned), "total": tool.upgrades}
+        for tool in PROSTHETIC_TOOLS
+    }
 
 
 def get_prosthetic_videos() -> dict[str, str]:

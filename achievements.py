@@ -7,7 +7,7 @@ what tracker.py should call instead of talking to bead_map directly.
 
 from bead_map import get_bead_state
 from gourd_map import get_gourd_state
-from prosthetic_map import get_prosthetic_state, get_prosthetic_videos
+from prosthetic_map import get_prosthetic_state, get_prosthetic_upgrades, get_prosthetic_videos
 from quantity_targets import get_quantity_state
 
 
@@ -19,6 +19,7 @@ def build_report(slot_data: bytes) -> dict:
         "prosthetic_tools": {
             "owned": owned,
             "missing": [name for name, has in owned.items() if not has],
+            "upgrades": get_prosthetic_upgrades(slot_data),
             "videos": get_prosthetic_videos(),
         },
         "quantity_targets": get_quantity_state(slot_data),
