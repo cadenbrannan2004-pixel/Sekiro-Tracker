@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Sekiro Tracker</title>
+  <link rel="icon" href="DeathKanji.ico">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -24,7 +25,7 @@
     <header>
       <div class="title-block">
         <h1>Sekiro Tracker</h1>
-        <p class="subtitle">Prayer beads, gourd seeds, prosthetics, materials, bosses and endings, read live from your save.</p>
+        <p class="subtitle">Prayer beads, gourd seeds, prosthetics, materials, bosses and endings, read automatically from your save.</p>
         <span id="status" class="status">Connecting…</span>
       </div>
     </header>
@@ -44,10 +45,6 @@
       <label class="switch-row">
         <span>Dark mode</span>
         <input id="theme-toggle" class="switch" type="checkbox" role="switch">
-      </label>
-      <label class="switch-row">
-        <span>Sakura petals</span>
-        <input class="switch" type="checkbox" role="switch" data-setting="petals" data-default="on">
       </label>
 
       <div class="panel-head sub-head">
@@ -95,10 +92,6 @@
           <option value="inline">In the page</option>
           <option value="youtube">On YouTube, in a new tab</option>
         </select>
-      </label>
-      <label class="switch-row">
-        <span>Close the app when this tab closes<small>When off, close the console window to quit</small></span>
-        <input class="switch" type="checkbox" role="switch" data-setting="autoClose" data-default="on">
       </label>
 
       <div class="panel-head sub-head">
@@ -153,27 +146,6 @@
       </div>
     </section>
 
-    <section class="panel" data-section="bosses">
-      <div class="panel-head">
-        <h2><svg class="section-icon" aria-hidden="true"><use href="#icon-bosses"/></svg>Bosses · Man Without Equal</h2>
-        <span id="bosses-count" class="count"></span>
-      </div>
-      <p class="panel-note">Read from the Steam account signed in on this PC. Steam has nothing for bosses without an achievement, so check those yourself.</p>
-      <div class="boss-scroller">
-        <button class="scroll-btn prev" type="button" aria-label="Scroll left" data-target="boss-cards">‹</button>
-        <ul id="boss-cards" class="boss-cards"></ul>
-        <button class="scroll-btn next" type="button" aria-label="Scroll right" data-target="boss-cards">›</button>
-      </div>
-
-      <div class="panel-head sub-head">
-        <h3>Hidden Boss Achievements</h3>
-        <span id="hidden-bosses-count" class="count"></span>
-      </div>
-      <div class="boss-scroller">
-        <ul id="hidden-boss-cards" class="boss-cards"></ul>
-      </div>
-    </section>
-
     <section class="panel" data-section="beads">
       <div class="panel-head">
         <h2><svg class="section-icon" aria-hidden="true"><use href="#icon-beads"/></svg>Prayer Beads</h2>
@@ -218,6 +190,27 @@
         <ul id="ninjutsu-list" class="checklist"></ul>
       </section>
     </div>
+
+    <section class="panel" data-section="bosses">
+      <div class="panel-head">
+        <h2><svg class="section-icon" aria-hidden="true"><use href="#icon-bosses"/></svg>Bosses - Man Without Equal</h2>
+        <span id="bosses-count" class="count"></span>
+      </div>
+      <p class="panel-note">Read from the Steam account signed in on this PC. Steam has nothing for bosses without an achievement, so check those yourself.</p>
+      <div class="boss-scroller">
+        <button class="scroll-btn prev" type="button" aria-label="Scroll left" data-target="boss-cards">‹</button>
+        <ul id="boss-cards" class="boss-cards"></ul>
+        <button class="scroll-btn next" type="button" aria-label="Scroll right" data-target="boss-cards">›</button>
+      </div>
+
+      <div class="panel-head sub-head">
+        <h3>Hidden Boss Achievements</h3>
+        <span id="hidden-bosses-count" class="count"></span>
+      </div>
+      <div class="boss-scroller">
+        <ul id="hidden-boss-cards" class="boss-cards"></ul>
+      </div>
+    </section>
 
     <section class="endings-section" data-section="endings">
       <div class="section-head">
