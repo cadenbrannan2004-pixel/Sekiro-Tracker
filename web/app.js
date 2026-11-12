@@ -699,6 +699,3 @@ refreshState();
 loadEndings();
 startPolling();
 setInterval(renderConnected, 1000);  // keeps "updated Xs ago" ticking between polls
-
-// Lets SekiroApp.py shut down when this tab closes (404/405 under plain server.py, harmless)
-addEventListener("pagehide", () => navigator.sendBeacon("/api/bye"));

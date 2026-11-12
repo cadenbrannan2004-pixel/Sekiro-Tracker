@@ -16,7 +16,6 @@ CHOICES = {
     "hideCollected": ("on", "off"),
     "newHighlight": ("seen", "1m", "5m", "off"),
     "refresh": ("1", "3", "5", "10"),
-    "autoClose": ("on", "off"),
     "videos": ("inline", "youtube"),
 }
 SECTIONS = ("bosses", "beads", "gourds", "tools", "materials", "endings")

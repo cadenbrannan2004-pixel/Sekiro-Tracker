@@ -1,7 +1,3 @@
-
-
-WARNING: In-progress project and still has room to add features
-
 # Sekiro Achievement Tracker
 
 > **Beta:** ready for testing. If something looks wrong, please [open an issue](https://github.com/cadenbrannan2004-pixel/Sekiro-Tracker/issues).
@@ -17,12 +13,11 @@ Sekiro doesn't have a built-in completion tracker, and many collectibles (like P
 ## Download and run
  
 1. Go to the [latest release](https://github.com/cadenbrannan2004-pixel/Sekiro-Tracker/releases/latest) and download `SekiroTracker.exe`.
-2. Put it in its own folder (for example `Documents\SekiroTracker`). It saves your ending checklist next to itself.
-3. Double-click `SekiroTracker.exe`. A small console window opens, then your dashboard opens in your browser.
-4. Play the game. The dashboard updates every time Sekiro saves (resting at an idol, picking things up, quitting to the menu).
-**To close it:** close the dashboard tab (the tracker shuts down a few seconds later), or close the console window.
+2. Double-click `SekiroTracker.exe`. You can keep it anywhere (Downloads, Desktop, etc.).
+3. Play the game. The dashboard updates every time Sekiro saves (resting at an idol, picking things up, quitting to the menu).
+**To close it:** close the window.
 
-*Please make a folder for this exe so when it is ran the json files written will stay together with the application*
+Your checklists and settings are saved in `%APPDATA%\SekiroTracker` (paste that into the File Explorer address bar to open it), so moving or replacing the exe never loses your progress. Coming from an older version that saved its files next to the exe? Just run the new exe from that same folder once and they're moved over automatically.
  
 ### "Windows protected your PC"
  
