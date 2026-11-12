@@ -17,7 +17,7 @@ Sekiro doesn't have a built-in completion tracker, and many collectibles (like P
 3. Play the game. The dashboard updates every time Sekiro saves (resting at an idol, picking things up, quitting to the menu).
 **To close it:** close the window.
 
-Your checklists and settings are saved in `%APPDATA%\SekiroTracker` (paste that into the File Explorer address bar to open it), so moving or replacing the exe never loses your progress. Coming from an older version that saved its files next to the exe? Just run the new exe from that same folder once and they're moved over automatically.
+Your checklists and settings are saved in `%APPDATA% and in the Sekiro Tracker folder`, so moving or replacing the exe never loses your progress. Coming from an older version that saved its files next to the exe? Just run the new exe from that same folder once and they're moved over automatically.
  
 ### "Windows protected your PC"
  
