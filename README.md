@@ -1,6 +1,6 @@
 # Sekiro Achievement Tracker
 
-> **Beta:** ready for testing. If something looks wrong, please [open an issue](https://github.com/cadenbrannan2004-pixel/Sekiro-Tracker/issues).
+> If something looks wrong, please [open an issue](https://github.com/cadenbrannan2004-pixel/Sekiro-Tracker/issues).
  
 A Python tool that reads Sekiro: Shadows Die Twice's save file directly and automatically tracks progress toward 100% completion(prayer beads, prosthetic tools, endings, and key resources (lapis and carp scales)).
 
