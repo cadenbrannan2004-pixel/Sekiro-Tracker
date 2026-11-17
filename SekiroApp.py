@@ -17,15 +17,21 @@ DATA_FILES = ("achievement_state.json", "ending_state.json", "boss_state.json",
 
 
 def user_data_dir() -> Path:
-    """%APPDATA%\\SekiroTracker, so the exe can live anywhere without scattering JSON files."""
-    data_dir = Path(os.environ.get("APPDATA") or Path.home()) / "SekiroTracker"
+    """%APPDATA%\\SekiroTracker on Windows, $XDG_DATA_HOME/SekiroTracker on Linux,
+    so the exe can live anywhere without scattering JSON files."""
+    # Older versions saved beside the exe (or in ~/SekiroTracker on Linux); move those over once
+    old_dirs = [Path(sys.executable).parent]
+    if sys.platform == "win32":
+        data_dir = Path(os.environ.get("APPDATA") or Path.home()) / "SekiroTracker"
+    else:
+        data_dir = Path(os.environ.get("XDG_DATA_HOME") or Path.home() / ".local/share") / "SekiroTracker"
+        old_dirs.append(Path.home() / "SekiroTracker")
     data_dir.mkdir(parents=True, exist_ok=True)
-    # Older versions saved beside the exe; move those over once so progress carries forward
-    exe_dir = Path(sys.executable).parent
-    for name in DATA_FILES:
-        old, new = exe_dir / name, data_dir / name
-        if old.exists() and not new.exists():
-            shutil.move(old, new)
+    for old_dir in old_dirs:
+        for name in DATA_FILES:
+            old, new = old_dir / name, data_dir / name
+            if old.exists() and not new.exists():
+                shutil.move(old, new)
     return data_dir
 
 
@@ -59,7 +65,9 @@ def main():
 
     # start() blocks until the window is closed, which quits the app.
     webview.create_window("Sekiro Tracker", url, width=1280, height=860, min_size=(480, 400))
-    webview.start(icon=str(server.WEB_DIR / "DeathKanji.ico"))
+    # Windows takes the .ico; GTK/Qt want a PNG, and no icon beats a broken one
+    icon = server.WEB_DIR / ("DeathKanji.ico" if sys.platform == "win32" else "DeathKanji.png")
+    webview.start(**({"icon": str(icon)} if icon.exists() else {}))
     httpd.shutdown()
 
 

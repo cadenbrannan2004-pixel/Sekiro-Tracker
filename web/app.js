@@ -65,6 +65,9 @@ function showPathMessage(text, cls) {
 fetch("/api/settings").then((res) => res.json()).then((info) => {
   pathInput.value = info.savePath;
   pathInput.placeholder = info.detectedSavePath || "No save found automatically";
+  if (!info.detectedSavePath && !info.savePath) {
+    showPathMessage("No save found. On Linux/Steam Deck it's under ~/.local/share/Steam/steamapps/compatdata/814380/pfx/drive_c/users/steamuser/AppData/Roaming/Sekiro/<SteamID>/S0000.sl2", "error");
+  }
 }).catch(() => {});
 
 document.getElementById("save-path-form").addEventListener("submit", async (event) => {

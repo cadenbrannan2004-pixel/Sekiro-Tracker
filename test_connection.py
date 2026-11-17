@@ -1,5 +1,7 @@
 
-from save_reader import default_save_path, read_save_file, extract_slot, find_active_slots
+import sys
+
+from save_reader import PROTON_SAVE_DIR, default_save_path, read_save_file, extract_slot, find_active_slots
 from stats_reader import read_stats
 from achievements import build_report
 
@@ -9,6 +11,8 @@ def main():
     if save_path is None:
         print("Could not auto-locate S0000.sl2.")
         print("Expected under %APPDATA%\\Sekiro\\<SteamID>\\S0000.sl2")
+        if sys.platform != "win32":
+            print(f"On Linux/Steam Deck: ~/.local/share/Steam/{PROTON_SAVE_DIR}/<SteamID>/S0000.sl2")
         print("If it's somewhere else, hardcode the path below and rerun.")
         return
 

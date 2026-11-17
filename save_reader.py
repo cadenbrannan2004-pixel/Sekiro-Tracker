@@ -1,9 +1,10 @@
 
 import os
+import re
 import struct
 from pathlib import Path
 
-from steam_achievements import active_steam_id64
+from steam_achievements import active_steam_id64, linux_steam_roots
 
 SLOT_SIZE = 0x100000
 SLOT_STRIDE = 0x100010  # slot size + inter-slot padding
@@ -16,24 +17,50 @@ NUM_SLOTS = 10
 ACTIVE_FLAGS_OFFSET = 0xA00484
 
 
+# Where Proton keeps the Windows %APPDATA%\Sekiro folder, relative to a Steam library
+PROTON_SAVE_DIR = Path("steamapps/compatdata/814380/pfx/drive_c/users/steamuser/AppData/Roaming/Sekiro")
+
+
+def _save_roots() -> list[Path]:
+    """Folders that may hold <steamid64>\\S0000.sl2: %APPDATA%\\Sekiro on Windows,
+    otherwise the Proton prefix in every Steam library (including extra ones
+    listed in libraryfolders.vdf)."""
+    appdata = os.environ.get("APPDATA")
+    if appdata:
+        return [Path(appdata) / "Sekiro"]
+    libraries = []
+    for steam in linux_steam_roots():
+        libraries.append(steam)
+        try:
+            vdf = (steam / "steamapps" / "libraryfolders.vdf").read_text(errors="ignore")
+        except OSError:
+            continue
+        libraries += [Path(p) for p in re.findall(r'"path"\s*"([^"]+)"', vdf)]
+    # ~/.steam/steam is usually a symlink to ~/.local/share/Steam, so dedupe resolved paths
+    return list(dict.fromkeys(Path(os.path.realpath(lib)) / PROTON_SAVE_DIR for lib in libraries))
+
+
 def default_save_path() -> Path | None:
     """Best-effort guess at the PC save location. Each Steam account gets its
     own %APPDATA%\\Sekiro\\<steamid64> folder, so this prefers the account
     signed in to Steam, then the most recently saved S0000.sl2, or None."""
-    appdata = os.environ.get("APPDATA")
-    if not appdata:
-        return None
-    root = Path(appdata) / "Sekiro"
-    if not root.exists():
+    roots = [r for r in _save_roots() if r.is_dir()]
+    if not roots:
         return None
 
     active = active_steam_id64()
     if active is not None:
-        candidate = root / str(active) / "S0000.sl2"
-        if candidate.exists():
-            return candidate
+        for root in roots:
+            candidate = root / str(active) / "S0000.sl2"
+            if candidate.exists():
+                return candidate
 
-    saves = [d / "S0000.sl2" for d in root.iterdir() if (d / "S0000.sl2").exists()]
+    saves = []
+    for root in roots:
+        try:
+            saves += [d / "S0000.sl2" for d in root.iterdir() if (d / "S0000.sl2").exists()]
+        except OSError:
+            continue
     return max(saves, key=lambda p: p.stat().st_mtime, default=None)
 
 

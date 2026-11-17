@@ -25,9 +25,38 @@ The app isn't code-signed, so Windows SmartScreen may warn you the first time. C
  
 ## Requirements
  
-- Windows PC with Sekiro: Shadows Die Twice on Steam
+- Windows, or Linux/Steam Deck via Proton (run from source), with Sekiro: Shadows Die Twice on Steam
 - The game has saved at least once (your save is found automatically at `%APPDATA%\Sekiro\<your Steam ID>\S0000.sl2`)
 - Tested on game version 1.06
+
+## Linux / Steam Deck
+
+The `.exe` is Windows-only, so on Linux (including Steam Deck desktop mode) run the tracker from source. You need Python 3.12+ and [uv](https://docs.astral.sh/uv/):
+
+```bash
+git clone https://github.com/cadenbrannan2004-pixel/Sekiro-Tracker.git
+cd Sekiro-Tracker
+uv sync
+uv run python SekiroApp.py
+```
+
+The app window uses pywebview, which needs a GUI backend on Linux. Install the GTK one for your distro:
+
+- Debian/Ubuntu: `sudo apt install python3-gi gir1.2-webkit2-4.1`
+- Fedora: `sudo dnf install python3-gobject webkit2gtk4.1`
+- Arch/SteamOS: `sudo pacman -S python-gobject webkit2gtk-4.1`
+
+Or use Qt instead: `pip install "pywebview[qt]"`.
+
+No GUI packages? Run `uv run python tracker.py` (watches the save) and, in a second terminal, `uv run python server.py`, then open http://127.0.0.1:5000 in your browser.
+
+Under Proton the save lives in the game's prefix:
+
+```
+~/.local/share/Steam/steamapps/compatdata/814380/pfx/drive_c/users/steamuser/AppData/Roaming/Sekiro/<your Steam ID>/S0000.sl2
+```
+
+It's found automatically (Flatpak Steam and extra Steam library folders too). If it isn't, paste the full path into the Save File box in the Settings tab.
 
 It tracks:
 - **Prayer Beads** (40 locations, grouped by region and source: boss drop, treasure, or shop purchase)

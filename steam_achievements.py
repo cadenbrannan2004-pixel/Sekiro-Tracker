@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import re
 import struct
+import sys
 from pathlib import Path
 
 APP_ID = 814380
@@ -19,14 +21,38 @@ def _steam_registry(subkey: str, value: str):
         return None
 
 
+def linux_steam_roots() -> list[Path]:
+    """Native, symlinked and Flatpak Steam installs that exist (empty on Windows)."""
+    if sys.platform == "win32":
+        return []
+    home = Path.home()
+    roots = [home / ".local/share/Steam", home / ".steam/steam",
+             home / ".var/app/com.valvesoftware.Steam/.local/share/Steam"]
+    return [r for r in roots if r.is_dir()]
+
+
 def steam_path() -> Path:
     path = _steam_registry("", "SteamPath")
-    return Path(path) if path else DEFAULT_STEAM_PATH
+    if path:
+        return Path(path)
+    return next(iter(linux_steam_roots()), DEFAULT_STEAM_PATH)
+
+
+def _linux_active_account_id() -> int | None:
+    """ActiveUser from ~/.steam/registry.vdf, Steam's text stand-in for the Windows registry."""
+    try:
+        text = (Path.home() / ".steam/registry.vdf").read_text(errors="ignore")
+    except OSError:
+        return None
+    match = re.search(r'"ActiveProcess"\s*\{[^}]*?"ActiveUser"\s*"(\d+)"', text, re.IGNORECASE)
+    return int(match.group(1)) if match else None
 
 
 def active_steam_id64() -> int | None:
     """steamid64 of whoever is signed in to Steam on this PC, or None if nobody is."""
     account_id = _steam_registry(r"\ActiveProcess", "ActiveUser")
+    if account_id is None and sys.platform != "win32":
+        account_id = _linux_active_account_id()
     return STEAM_ID64_BASE + account_id if account_id else None
 
 
