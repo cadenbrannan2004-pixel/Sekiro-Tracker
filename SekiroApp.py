@@ -8,9 +8,7 @@ from pathlib import Path
 import webview
 from werkzeug.serving import make_server
 
-import app_settings
-import server
-import tracker
+from sekiro_tracker import app_settings, server, tracker
 
 DATA_FILES = ("achievement_state.json", "ending_state.json", "boss_state.json",
               "slot_names.json", "settings.json")

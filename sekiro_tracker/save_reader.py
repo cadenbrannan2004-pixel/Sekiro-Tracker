@@ -3,7 +3,7 @@ import os
 import struct
 from pathlib import Path
 
-from steam_achievements import active_steam_id64
+from .steam_achievements import active_steam_id64
 
 SLOT_SIZE = 0x100000
 SLOT_STRIDE = 0x100010  # slot size + inter-slot padding

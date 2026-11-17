@@ -2,15 +2,16 @@
 import json
 from pathlib import Path
 
+from . import PROJECT_ROOT
 from flask import Flask, Response, jsonify, request, send_from_directory
 
-import app_settings
-from boss_map import MANUAL_IDS, get_account_bosses
-from endings import ENDINGS
-from save_reader import default_save_path, save_owner_steam_id64
-from steam_achievements import read_achievements
+from . import app_settings
+from .boss_map import MANUAL_IDS, get_account_bosses
+from .endings import ENDINGS
+from .save_reader import default_save_path, save_owner_steam_id64
+from .steam_achievements import read_achievements
 
-APP_ROOT = Path(__file__).parent
+APP_ROOT = PROJECT_ROOT
 STATE_PATH = APP_ROOT / "achievement_state.json"
 ENDING_STATE_PATH = APP_ROOT / "ending_state.json"
 BOSS_STATE_PATH = APP_ROOT / "boss_state.json"

@@ -12,8 +12,8 @@ import argparse
 import sys
 from pathlib import Path
 
-from save_reader import read_save_file, extract_slot
-from bead_map import PRAYER_BEADS
+from sekiro_tracker.save_reader import read_save_file, extract_slot
+from sekiro_tracker.bead_map import PRAYER_BEADS
 
 SNAP_DIR = Path("saves")
 
@@ -38,7 +38,7 @@ LAYOUTS = {"sekiro-block": _block_msb, "msb": _flat_msb, "lsb": _flat_lsb,
 def load_slot(label: str, slot: int) -> bytes:
     path = SNAP_DIR / f"{label}.sl2"
     if not path.exists():
-        sys.exit(f"No snapshot at {path}. Run: uv run find_offset.py snap {label}")
+        sys.exit(f"No snapshot at {path}. Run: uv run python -m tools.find_offset snap {label}")
     return extract_slot(read_save_file(path), slot)
 
 

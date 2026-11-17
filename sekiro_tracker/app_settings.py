@@ -5,9 +5,10 @@ import os
 import re
 from pathlib import Path
 
-from save_reader import default_save_path
+from . import PROJECT_ROOT
+from .save_reader import default_save_path
 
-SETTINGS_PATH = Path(__file__).parent / "settings.json"
+SETTINGS_PATH = PROJECT_ROOT / "settings.json"
 
 # Allowed values per setting; anything else sent from the page is ignored
 CHOICES = {

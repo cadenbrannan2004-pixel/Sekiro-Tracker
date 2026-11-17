@@ -4,13 +4,14 @@ import os
 import time
 from pathlib import Path
 
-import app_settings
-from save_reader import read_save_file, extract_slot, find_active_slots
-from achievements import build_report
-from stats_reader import read_stats
+from . import PROJECT_ROOT
+from . import app_settings
+from .save_reader import read_save_file, extract_slot, find_active_slots
+from .achievements import build_report
+from .stats_reader import read_stats
 
-# Anchored to this file's folder so server.py finds it no matter where tracker.py is launched from
-OUTPUT_PATH = Path(__file__).parent / "achievement_state.json"
+# Anchored to the repo root so server.py finds it no matter where tracker is launched from
+OUTPUT_PATH = PROJECT_ROOT / "achievement_state.json"
 
 
 

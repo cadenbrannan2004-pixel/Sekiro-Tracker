@@ -1,7 +1,11 @@
-
-from save_reader import default_save_path, read_save_file, extract_slot, find_active_slots
-from stats_reader import read_stats
-from achievements import build_report
+from sekiro_tracker.save_reader import (
+    default_save_path,
+    read_save_file,
+    extract_slot,
+    find_active_slots,
+)
+from sekiro_tracker.stats_reader import read_stats
+from sekiro_tracker.achievements import build_report
 
 
 def main():
@@ -20,8 +24,10 @@ def main():
     print(f"Active-looking slots: {active}\n")
 
     if not active:
-        print("No active slots detected and something's off with the file "
-              "or the 'active slot' heuristic needs adjusting.")
+        print(
+            "No active slots detected and something's off with the file "
+            "or the 'active slot' heuristic needs adjusting."
+        )
         return
 
     for slot_index in active:
@@ -42,9 +48,13 @@ def main():
         for name, info in report["quantity_targets"].items():
             print(f"  {name}: {info['have']} / {info['target']}")
 
-        beads_mapped = sum(1 for b in report["prayer_beads"] if b["collected"] is not None)
-        print(f"\nPrayer beads mapped so far: {beads_mapped} "
-              f"(rest show null -- expected, not an error)")
+        beads_mapped = sum(
+            1 for b in report["prayer_beads"] if b["collected"] is not None
+        )
+        print(
+            f"\nPrayer beads mapped so far: {beads_mapped} "
+            f"(rest show null expected, not an error)"
+        )
         print()
 
 

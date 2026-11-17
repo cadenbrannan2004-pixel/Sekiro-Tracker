@@ -1,8 +1,8 @@
 
-from bead_map import get_bead_state
-from gourd_map import get_gourd_state
-from prosthetic_map import get_prosthetic_state, get_prosthetic_upgrades, get_prosthetic_videos
-from quantity_targets import get_quantity_state
+from .bead_map import get_bead_state
+from .gourd_map import get_gourd_state
+from .prosthetic_map import get_prosthetic_state, get_prosthetic_upgrades, get_prosthetic_videos
+from .quantity_targets import get_quantity_state
 
 
 def build_report(slot_data: bytes) -> dict:
