@@ -2,7 +2,7 @@
 import json
 from pathlib import Path
 
-from . import PROJECT_ROOT
+from . import PROJECT_ROOT, save_json
 from flask import Flask, Response, jsonify, request, send_from_directory
 
 from . import app_settings
@@ -27,11 +27,6 @@ def _load_json(path: Path, default):
         return default
     with open(path) as f:
         return json.load(f)
-
-
-def _save_json(path: Path, data) -> None:
-    with open(path, "w") as f:
-        json.dump(data, f, indent=2)
 
 
 @app.route("/")
@@ -92,7 +87,7 @@ def api_state():
     names = _load_json(SLOT_NAMES_PATH, {})
     kept = {slot: name for slot, name in names.items() if slot in state.get("slots", {})}
     if kept != names:
-        _save_json(SLOT_NAMES_PATH, kept)
+        save_json(SLOT_NAMES_PATH, kept)
     state["names"] = kept
     account = _current_account()
     achievements = read_achievements(int(account)) if account else None
@@ -117,7 +112,7 @@ def api_slot_names_post():
         names[slot] = name
     else:
         names.pop(slot, None)  # blank = back to the default "Slot N"
-    _save_json(SLOT_NAMES_PATH, names)
+    save_json(SLOT_NAMES_PATH, names)
     return jsonify({"ok": True, "name": name})
 
 
@@ -152,7 +147,7 @@ def api_endings_post():
 
     state = _load_json(ENDING_STATE_PATH, {})
     state[req_id] = checked_value
-    _save_json(ENDING_STATE_PATH, state)
+    save_json(ENDING_STATE_PATH, state)
     return jsonify({"ok": True})
 
 
@@ -171,7 +166,7 @@ def api_bosses_post():
         return jsonify({"error": "no Steam account save found"}), 409
     state = _load_json(BOSS_STATE_PATH, {})
     state.setdefault(account, {})[boss_id] = checked_value
-    _save_json(BOSS_STATE_PATH, state)
+    save_json(BOSS_STATE_PATH, state)
     return jsonify({"ok": True})
 
 

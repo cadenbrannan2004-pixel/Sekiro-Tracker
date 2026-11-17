@@ -6,8 +6,6 @@ from alfizari/Sekiro-Save-Editor's main_no_ai.py.
 
 """
 
-from __future__ import annotations
-
 import struct
 from dataclasses import dataclass
 

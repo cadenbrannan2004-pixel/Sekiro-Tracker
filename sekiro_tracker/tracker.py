@@ -1,10 +1,8 @@
 
-import json
-import os
 import time
 from pathlib import Path
 
-from . import PROJECT_ROOT
+from . import PROJECT_ROOT, save_json
 from . import app_settings
 from .save_reader import read_save_file, extract_slot, find_active_slots
 from .achievements import build_report
@@ -56,12 +54,8 @@ def run():
                     continue
                 slots[str(idx)] = {"stats": read_stats(slot), "report": report}
 
-            # this will create a temporary file first, then rename it to the final name. This avoids
-            # a race condition where the web app reads the file while it's being written and gets a half file
-            tmp = OUTPUT_PATH.with_suffix(".tmp")
-            with open(tmp, "w") as f:
-                json.dump({"updated": time.time(), "save_file": save_path.name, "slots": slots}, f, indent=2)
-            os.replace(tmp, OUTPUT_PATH)
+            # Atomic, so the web app never reads a half-written file
+            save_json(OUTPUT_PATH, {"updated": time.time(), "save_file": save_path.name, "slots": slots})
 
             for idx, slot in slots.items():
                 r = slot["report"]

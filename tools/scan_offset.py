@@ -6,8 +6,6 @@ Not written by me but ai as a tool to find the offset of the prayer bead table i
 It scans a full slot for known prayer bead flags and can also compare two snapshots to find where a specific flag flipped from 0 to 1.
 """
 
-from __future__ import annotations
-
 import argparse
 import sys
 from pathlib import Path

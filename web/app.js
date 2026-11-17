@@ -174,19 +174,13 @@ document.body.appendChild(player);
 const playerFrame = player.querySelector("iframe");
 let openVideoKey = null;
 
-// youtu.be/ID?t=72 or youtube.com/watch?v=ID&t=1m12s -> embed URL; null for anything else
+// youtu.be/ID?t=72 -> embed URL; null for anything else (which then opens in a new tab)
 function embedUrl(url) {
   let u;
   try { u = new URL(url); } catch (e) { return null; }
-  const host = u.hostname.replace(/^(www|m)\./, "");
-  let id = null;
-  if (host === "youtu.be") id = u.pathname.slice(1);
-  else if (host === "youtube.com") {
-    id = u.pathname === "/watch" ? u.searchParams.get("v") : (u.pathname.match(/^\/(?:embed|shorts|live)\/([^/]+)/) || [])[1];
-  }
+  const id = u.hostname === "youtu.be" ? u.pathname.slice(1) : null;
   if (!id || !/^[\w-]+$/.test(id)) return null;
-  const t = (u.searchParams.get("t") || u.searchParams.get("start") || "").match(/^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s?)?$/);
-  const start = t ? (+t[1] || 0) * 3600 + (+t[2] || 0) * 60 + (+t[3] || 0) : 0;
+  const start = parseInt(u.searchParams.get("t"), 10) || 0;
   return `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0` + (start ? `&start=${start}` : "");
 }
 

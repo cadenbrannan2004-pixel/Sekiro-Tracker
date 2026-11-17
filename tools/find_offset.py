@@ -52,8 +52,6 @@ FINDING THE SLOT "ACTIVE" FLAGS (for save_reader.find_active_slots):
   per slot.
 """
 
-from __future__ import annotations
-
 import argparse
 import shutil
 import sys
