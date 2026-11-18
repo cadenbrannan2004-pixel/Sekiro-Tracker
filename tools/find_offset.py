@@ -16,12 +16,12 @@ CLEAN CAPTURE (this matters -- a noisy capture is useless):
      right next to it -- do NOT open it yet.
   2. Quit to the MAIN MENU (this writes S0000.sl2 and, on reload, puts you
      back exactly here with the enemies still dead).
-         uv run find_offset.py snap before
+         uv run python -m tools.find_offset snap before
   3. Load back in. Open the chest / grab the bead. Do NOTHING else -- no
      fighting, no running around, no resting at an idol.
   4. Quit to the main menu immediately.
-         uv run find_offset.py snap after
-  5. uv run find_offset.py diff before after --flag-id <id> --slot <n>
+         uv run python -m tools.find_offset snap after
+  5. uv run python -m tools.find_offset diff before after --flag-id <id> --slot <n>
 
      (event_flag_id values are in bead_map.py: attic chest = 6788,
       castle map-room hidden wall = 6790, Blazing Bull = 6711, ...)
@@ -29,7 +29,7 @@ CLEAN CAPTURE (this matters -- a noisy capture is useless):
 If one clean pair still looks ambiguous, do a second bead the same way
 with different labels and intersect:
 
-  uv run find_offset.py intersect --slot 2 \
+  uv run python -m tools.find_offset intersect --slot 2 \
       --pair before after 6790 \
       --pair before2 after2 6711
 
@@ -43,23 +43,21 @@ FINDING THE SLOT "ACTIVE" FLAGS (for save_reader.find_active_slots):
   Deleting a character doesn't wipe its slot, so the per-slot active flags
   live in the summary block after the 10 character slots instead.
 
-  1. At the main menu:    uv run find_offset.py snap has_char
+  1. At the main menu:    uv run python -m tools.find_offset snap has_char
   2. Delete a character, still at the main menu:
-                          uv run find_offset.py snap deleted
-  3. uv run find_offset.py tail has_char deleted
+                          uv run python -m tools.find_offset snap deleted
+  3. uv run python -m tools.find_offset tail has_char deleted
 
   Look for a byte that went 01 -> 00 among a run of 10 similar bytes, one
   per slot.
 """
-
-from __future__ import annotations
 
 import argparse
 import shutil
 import sys
 from pathlib import Path
 
-from save_reader import (default_save_path, read_save_file, extract_slot,
+from sekiro_tracker.save_reader import (default_save_path, read_save_file, extract_slot,
                          FIRST_SLOT_OFFSET, SLOT_STRIDE, NUM_SLOTS)
 
 SNAP_DIR = Path("saves")
@@ -80,7 +78,7 @@ def cmd_snap(args: argparse.Namespace) -> None:
 def _load_slot(label: str, slot_index: int) -> bytes:
     path = SNAP_DIR / f"{label}.sl2"
     if not path.exists():
-        sys.exit(f"No snapshot at {path}.  Run:  uv run find_offset.py snap {label}")
+        sys.exit(f"No snapshot at {path}.  Run:  uv run python -m tools.find_offset snap {label}")
     return extract_slot(read_save_file(path), slot_index)
 
 
@@ -152,7 +150,7 @@ def cmd_tail(args: argparse.Namespace) -> None:
     paths = [SNAP_DIR / f"{label}.sl2" for label in (args.before, args.after)]
     for path in paths:
         if not path.exists():
-            sys.exit(f"No snapshot at {path}.  Run:  uv run find_offset.py snap {path.stem}")
+            sys.exit(f"No snapshot at {path}.  Run:  uv run python -m tools.find_offset snap {path.stem}")
     before, after = (read_save_file(path) for path in paths)
     if len(before) != len(after):
         sys.exit("Snapshots differ in size -- corrupt copy?")

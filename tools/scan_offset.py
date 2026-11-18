@@ -6,14 +6,12 @@ Not written by me but ai as a tool to find the offset of the prayer bead table i
 It scans a full slot for known prayer bead flags and can also compare two snapshots to find where a specific flag flipped from 0 to 1.
 """
 
-from __future__ import annotations
-
 import argparse
 import sys
 from pathlib import Path
 
-from save_reader import read_save_file, extract_slot
-from bead_map import PRAYER_BEADS
+from sekiro_tracker.save_reader import read_save_file, extract_slot
+from sekiro_tracker.bead_map import PRAYER_BEADS
 
 SNAP_DIR = Path("saves")
 
@@ -38,7 +36,7 @@ LAYOUTS = {"sekiro-block": _block_msb, "msb": _flat_msb, "lsb": _flat_lsb,
 def load_slot(label: str, slot: int) -> bytes:
     path = SNAP_DIR / f"{label}.sl2"
     if not path.exists():
-        sys.exit(f"No snapshot at {path}. Run: uv run find_offset.py snap {label}")
+        sys.exit(f"No snapshot at {path}. Run: uv run python -m tools.find_offset snap {label}")
     return extract_slot(read_save_file(path), slot)
 
 

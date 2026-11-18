@@ -1,13 +1,13 @@
 
 import html
 import json
-import os
 import re
 from pathlib import Path
 
-from save_reader import default_save_path
+from . import PROJECT_ROOT, save_json
+from .save_reader import default_save_path
 
-SETTINGS_PATH = Path(__file__).parent / "settings.json"
+SETTINGS_PATH = PROJECT_ROOT / "settings.json"
 
 # Allowed values per setting; anything else sent from the page is ignored
 CHOICES = {
@@ -30,13 +30,6 @@ def load() -> dict:
     except (OSError, ValueError):
         return {}
     return data if isinstance(data, dict) else {}
-
-
-def _save(settings: dict) -> None:
-    tmp = SETTINGS_PATH.with_suffix(".tmp")
-    with open(tmp, "w") as f:
-        json.dump(settings, f, indent=2)
-    os.replace(tmp, SETTINGS_PATH)
 
 
 def reset() -> None:
@@ -67,7 +60,7 @@ def update(payload: dict) -> str | None:
     if isinstance(payload.get("hiddenSections"), list):
         settings["hiddenSections"] = [s for s in SECTIONS if s in payload["hiddenSections"]]
 
-    _save(settings)
+    save_json(SETTINGS_PATH, settings)
     return None
 
 

@@ -1,7 +1,7 @@
 
 from dataclasses import dataclass
 
-from event_flags import flag_state
+from .event_flags import flag_state
 
 
 # How the item is obtained, shown next to it in the UI

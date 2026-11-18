@@ -1,16 +1,19 @@
 
 import json
+import os
+import threading
 from pathlib import Path
 
+from . import PROJECT_ROOT, save_json
 from flask import Flask, Response, jsonify, request, send_from_directory
 
-import app_settings
-from boss_map import MANUAL_IDS, get_account_bosses
-from endings import ENDINGS
-from save_reader import default_save_path, save_owner_steam_id64
-from steam_achievements import read_achievements
+from . import app_settings, updater
+from .boss_map import MANUAL_IDS, get_account_bosses
+from .endings import ENDINGS
+from .save_reader import default_save_path, save_owner_steam_id64
+from .steam_achievements import read_achievements
 
-APP_ROOT = Path(__file__).parent
+APP_ROOT = PROJECT_ROOT
 STATE_PATH = APP_ROOT / "achievement_state.json"
 ENDING_STATE_PATH = APP_ROOT / "ending_state.json"
 BOSS_STATE_PATH = APP_ROOT / "boss_state.json"
@@ -26,11 +29,6 @@ def _load_json(path: Path, default):
         return default
     with open(path) as f:
         return json.load(f)
-
-
-def _save_json(path: Path, data) -> None:
-    with open(path, "w") as f:
-        json.dump(data, f, indent=2)
 
 
 @app.route("/")
@@ -68,6 +66,30 @@ def api_settings_reset():
     return jsonify({"ok": True})
 
 
+# Set by the GET below, so the POST only ever installs what GitHub reported, never a URL from the page
+_update = None
+
+
+@app.route("/api/update", methods=["GET"])
+def api_update_get():
+    global _update
+    _update = updater.check()
+    return jsonify({"current": updater.VERSION, "latest": _update["version"] if _update else None})
+
+
+@app.route("/api/update", methods=["POST"])
+def api_update_post():
+    if _update is None:
+        return jsonify({"error": "no update available"}), 409
+    try:
+        updater.install(_update)
+    except Exception as exc:
+        return jsonify({"error": f"Update failed: {exc}"}), 500
+    # The new version is already starting; quit once this response is sent so the window closes
+    threading.Timer(0.5, os._exit, [0]).start()
+    return jsonify({"ok": True})
+
+
 @app.route("/<path:filename>")
 def static_files(filename):
     return send_from_directory(WEB_DIR, filename)
@@ -91,7 +113,7 @@ def api_state():
     names = _load_json(SLOT_NAMES_PATH, {})
     kept = {slot: name for slot, name in names.items() if slot in state.get("slots", {})}
     if kept != names:
-        _save_json(SLOT_NAMES_PATH, kept)
+        save_json(SLOT_NAMES_PATH, kept)
     state["names"] = kept
     account = _current_account()
     achievements = read_achievements(int(account)) if account else None
@@ -116,7 +138,7 @@ def api_slot_names_post():
         names[slot] = name
     else:
         names.pop(slot, None)  # blank = back to the default "Slot N"
-    _save_json(SLOT_NAMES_PATH, names)
+    save_json(SLOT_NAMES_PATH, names)
     return jsonify({"ok": True, "name": name})
 
 
@@ -151,7 +173,7 @@ def api_endings_post():
 
     state = _load_json(ENDING_STATE_PATH, {})
     state[req_id] = checked_value
-    _save_json(ENDING_STATE_PATH, state)
+    save_json(ENDING_STATE_PATH, state)
     return jsonify({"ok": True})
 
 
@@ -170,7 +192,7 @@ def api_bosses_post():
         return jsonify({"error": "no Steam account save found"}), 409
     state = _load_json(BOSS_STATE_PATH, {})
     state.setdefault(account, {})[boss_id] = checked_value
-    _save_json(BOSS_STATE_PATH, state)
+    save_json(BOSS_STATE_PATH, state)
     return jsonify({"ok": True})
 
 

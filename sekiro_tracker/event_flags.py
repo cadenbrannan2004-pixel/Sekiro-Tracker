@@ -1,6 +1,4 @@
 
-from __future__ import annotations
-
 # Byte offset within the slot data where each flag block starts, keyed by
 # block number (flag_id // 1000). Offsets are found empirically with
 # find_offset.py / scan_offset.py; blocks not listed here are unknown.

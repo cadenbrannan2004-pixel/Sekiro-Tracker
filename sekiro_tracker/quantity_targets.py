@@ -7,7 +7,7 @@ picked-up/not-picked-up state
 
 from dataclasses import dataclass
 
-from inventory_reader import get_good_quantity
+from .inventory_reader import get_good_quantity
 
 
 @dataclass

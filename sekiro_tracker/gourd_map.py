@@ -1,6 +1,6 @@
 
-from bead_map import BOSS, CHEST, PICKUP, SHOP, BeadLocation as GourdLocation
-from event_flags import flag_state
+from .bead_map import BOSS, CHEST, PICKUP, SHOP, BeadLocation as GourdLocation
+from .event_flags import flag_state
 
 
 # Grouped by how it's obtained, route order within each group; flag None = not mapped yet.

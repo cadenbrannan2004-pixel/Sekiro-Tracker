@@ -1,7 +1,7 @@
 
 from dataclasses import dataclass
 
-from inventory_reader import owned_weapon_ids, owns_weapon
+from .inventory_reader import owned_weapon_ids, owns_weapon
 
 UPGRADE_ID_STEP = 100
 
