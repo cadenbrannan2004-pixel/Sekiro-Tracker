@@ -682,6 +682,32 @@ async function loadEndings() {
   placeVideo();
 }
 
+// Update banner: the server asks GitHub once per launch, and only the built exe gets an answer
+const updateBox = document.getElementById("update");
+const updateText = updateBox.querySelector(".update-text");
+const updateButton = updateBox.querySelector("button");
+
+fetch("/api/update").then((res) => res.json()).then((info) => {
+  if (!info.latest) return;
+  updateText.textContent = `${info.latest} is available (you have v${info.current}).`;
+  updateBox.hidden = false;
+}).catch(() => {});
+
+updateButton.addEventListener("click", async () => {
+  updateButton.disabled = true;
+  updateButton.textContent = "Updating…";
+  const res = await fetch("/api/update", { method: "POST" }).catch(() => null);
+  if (res && res.ok) {
+    updateText.textContent = "Updated. Restarting…";  // this window closes and the new version opens
+    updateButton.hidden = true;
+    return;
+  }
+  const body = res ? await res.json().catch(() => ({})) : {};
+  updateText.textContent = body.error || "Update failed. Check your connection and try again.";
+  updateButton.disabled = false;
+  updateButton.textContent = "Try again";
+});
+
 // Restarted when the refresh setting changes
 let pollTimer = null;
 function startPolling() {

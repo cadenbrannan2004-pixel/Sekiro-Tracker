@@ -141,6 +141,10 @@ h1 {
 .status.ok::before { background: var(--heading); }
 .status.error { color: var(--accent-text); }
 
+/* New-version banner under the status pill; the built exe only */
+.update { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 10px; font-size: 13px; color: var(--text); }
+.update[hidden] { display: none; }
+
 
 /* Slot tabs */
 .tabs {

@@ -7,7 +7,7 @@ from pathlib import Path
 import webview
 from werkzeug.serving import make_server
 
-from sekiro_tracker import app_settings, server, tracker
+from sekiro_tracker import app_settings, server, tracker, updater
 
 # A --onefile exe unpacks bundled files to a temp dir (sys._MEIPASS) that is
 # wiped on exit, so web files load from there but JSON state lives in AppData.
@@ -21,6 +21,7 @@ if getattr(sys, "frozen", False):
     server.BOSS_STATE_PATH = data_dir / "boss_state.json"
     server.SLOT_NAMES_PATH = data_dir / "slot_names.json"
     app_settings.SETTINGS_PATH = data_dir / "settings.json"
+    updater.remove_leftover()
 
 
 def watch():

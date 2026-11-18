@@ -1,11 +1,13 @@
 
 import json
+import os
+import threading
 from pathlib import Path
 
 from . import PROJECT_ROOT, save_json
 from flask import Flask, Response, jsonify, request, send_from_directory
 
-from . import app_settings
+from . import app_settings, updater
 from .boss_map import MANUAL_IDS, get_account_bosses
 from .endings import ENDINGS
 from .save_reader import default_save_path, save_owner_steam_id64
@@ -61,6 +63,30 @@ def api_settings_post():
 @app.route("/api/settings/reset", methods=["POST"])
 def api_settings_reset():
     app_settings.reset()
+    return jsonify({"ok": True})
+
+
+# Set by the GET below, so the POST only ever installs what GitHub reported, never a URL from the page
+_update = None
+
+
+@app.route("/api/update", methods=["GET"])
+def api_update_get():
+    global _update
+    _update = updater.check()
+    return jsonify({"current": updater.VERSION, "latest": _update["version"] if _update else None})
+
+
+@app.route("/api/update", methods=["POST"])
+def api_update_post():
+    if _update is None:
+        return jsonify({"error": "no update available"}), 409
+    try:
+        updater.install(_update)
+    except Exception as exc:
+        return jsonify({"error": f"Update failed: {exc}"}), 500
+    # The new version is already starting; quit once this response is sent so the window closes
+    threading.Timer(0.5, os._exit, [0]).start()
     return jsonify({"ok": True})
 
 
