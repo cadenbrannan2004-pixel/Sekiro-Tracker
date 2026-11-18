@@ -1,6 +1,3 @@
-"""Offline check of the updater's version compare, checksum and exe swap.
-Run: uv run python -m tools.test_updater"""
-
 import hashlib
 import io
 import json
@@ -25,8 +22,8 @@ def release(tag, digest="sha256:" + hashlib.sha256(NEW_EXE).hexdigest()):
 
 
 def main():
-    with mock.patch.object(updater, "FROZEN", True), mock.patch.object(updater, "VERSION", "1.2.0"):
-        for tag, newer in [("v1.2.0", False), ("v1.1.9", False), ("v1.10.0", True), ("v2.0-beta", False)]:
+    with mock.patch.object(updater, "FROZEN", True), mock.patch.object(updater, "VERSION", "1.1.0"):
+        for tag, newer in [("v1.1.0", False), ("v1.0.9", False), ("v1.10.0", True), ("v2.0-beta", False)]:
             with mock.patch("urllib.request.urlopen", fake_urlopen(release(tag))):
                 assert (updater.check() is not None) == newer, tag
         with mock.patch("urllib.request.urlopen", fake_urlopen(release("v9.0.0", digest=None))):

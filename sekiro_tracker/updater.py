@@ -6,7 +6,7 @@ import sys
 import urllib.request
 from pathlib import Path
 
-VERSION = "1.0.0"
+VERSION = "1.1.0"
 LATEST_RELEASE = (
     "https://api.github.com/repos/cadenbrannan2004-pixel/Sekiro-Tracker/releases/latest"
 )
