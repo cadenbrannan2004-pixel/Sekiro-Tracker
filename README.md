@@ -1,4 +1,4 @@
-# Sekiro Achievement Tracker
+# Sekiro Tracker
 
 > If something looks wrong, please [open an issue](https://github.com/cadenbrannan2004-pixel/Sekiro-Tracker/issues).
  
